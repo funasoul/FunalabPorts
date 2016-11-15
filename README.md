@@ -17,16 +17,16 @@ portindex
 ```
 Then, add this local repo. to your MacPorts.
 ```sh
-% sudo chmod 644 /opt/local/etc/macports/sources.conf
-% sudo vim /opt/local/etc/macports/sources.conf
+sudo chmod 644 /opt/local/etc/macports/sources.conf
+sudo vim /opt/local/etc/macports/sources.conf
 # Add this following line (please change "yourname" as your username)
 file:///Users/yourname/git/FunalabPorts
-% sudo chmod a-w /opt/local/etc/macports/sources.conf
+sudo chmod a-w /opt/local/etc/macports/sources.conf
 ```
 
 ### Test whether your Macports can find your local repo.
 ```sh
-% port search chainer
+port search chainer
 py-chainer @1.1.1 (python)
     A flexible framework of neural networks
 
@@ -56,3 +56,4 @@ or
 ```sh
 sudo port upgrade py27-chainer
 ```
+Have fun!

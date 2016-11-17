@@ -5,7 +5,7 @@ Local Portfile Repository for FunaLab.
 * python/py-chainer  ... Portfile for chainer-1.18.0
 * python/py-filelock ... Portfile for filelock-2.0.7
 * science/cufflinks  ... Portfile for Cufflinks-2.2.1
-* science/samtools0  ... Portfile for samtools-0.1.19 (because cufflinks requires samtools-0.1.x)
+* science/samtools0  ... Portfile for samtools-0.1.19 (because [cufflinks requires samtools-0.x](https://github.com/cole-trapnell-lab/cufflinks/issues/14))
 
 ## How to use
 ### Use this project as your Local Portfile Repository

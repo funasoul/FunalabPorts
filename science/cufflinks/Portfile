@@ -1,0 +1,44 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        cole-trapnell-lab cufflinks 2.2.1 v
+name                cufflinks
+categories          science biology
+platforms           darwin
+maintainers         gmail.com:haroldpimentel
+license             Boost
+
+description         Cufflinks assembles transcripts, estimates their abundances,\
+                    and tests for differential expression and regulation in RNA-Seq samples.
+
+long_description    Cufflinks assembles transcripts, estimates their abundances, \
+                    and tests for differential expression and regulation in RNA-Seq \
+                    samples. It accepts aligned RNA-Seq reads and assembles the \
+                    alignments into a parsimonious set of transcripts. \
+                    Cufflinks then estimates the relative abundances of these \
+                    transcripts based on how many reads support each one, taking \
+                    into account biases in library preparation protocols.
+
+homepage            http://cole-trapnell-lab.github.io/cufflinks/
+
+checksums           rmd160      eb5da2099ec6ddf1df2348b055f38c6167bc412f \
+                    sha256      828340f29ade5441f4af929c072a20cb2b458da20b4836760a14389f776b1f0b
+
+depends_lib         port:zlib \
+                    port:samtools0 \
+                    port:eigen3 \
+                    port:boost
+
+# samtools is not universal
+universal_variant   no
+
+use_autoreconf      yes
+autoreconf.args     --install
+
+configure.args-append   EIGEN_CPPFLAGS=-I${prefix}/include/eigen3 \
+                        --with-boost-thread=-lboost_thread-mt \
+                        --with-boost-serialization=-lboost_serialization-mt
+

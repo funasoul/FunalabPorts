@@ -30,8 +30,6 @@ distname            libSBML-${version}-Source
 checksums           rmd160  950b2412d17ad1fecf829a6ff597987845580293 \
                     sha256  712e85aba6d6db8b7b7b536a0ba14997482318bed24d89db12221283efb9d1ee
 
-depends_build-append  port:swig
-
 depends_lib-append  port:bzip2 \
                     port:libxml2 \
                     port:zlib \
@@ -86,11 +84,13 @@ variant spatial description {Enable libSBML support for the SBML Level 3 Spatial
 }
 
 variant python27 conflicts python34 description {Configure to use Python version 2.7} {
+    depends_build-append  port:swig port:swig-python
     depends_lib-append      port:python27
     configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
 }
 
 variant python34 conflicts python27 description {Configure to use Python version 3.4} {
+    depends_build-append  port:swig port:swig-python
     depends_lib-append      port:python34
     configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python3.4
 }

@@ -30,6 +30,8 @@ distname            libSBML-${version}-Source
 checksums           rmd160  950b2412d17ad1fecf829a6ff597987845580293 \
                     sha256  712e85aba6d6db8b7b7b536a0ba14997482318bed24d89db12221283efb9d1ee
 
+depends_build-append  port:swig
+
 depends_lib-append  port:bzip2 \
                     port:libxml2 \
                     port:zlib \

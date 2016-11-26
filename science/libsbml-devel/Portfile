@@ -1,0 +1,96 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+PortGroup           cmake 1.0
+
+cmake.out_of_source yes
+
+name                libsbml-devel
+version             5.13.0
+categories          science
+platforms           darwin
+maintainers         nomaintainer
+license             LGPL-2.1+
+
+description         The Systems Biology Markup Language library
+
+long_description    LibSBML is a free, open-source programming library to \
+                    help you read, write, manipulate, translate, and validate \
+                    SBML files and data streams. It is not an application \
+                    itself (though it does come with example programs), but \
+                    rather a library you can embed in your own applications.
+
+homepage            http://sbml.org/Software/libSBML
+#https://sourceforge.net/projects/sbml/files/libsbml/5.13.0/experimental/source/libSBML-5.13.0-Source.tar.gz/download
+master_sites        sourceforge:project/sbml/libsbml/${version}/experimental/source
+
+distname            libSBML-${version}-Source
+
+checksums           rmd160  950b2412d17ad1fecf829a6ff597987845580293 \
+                    sha256  712e85aba6d6db8b7b7b536a0ba14997482318bed24d89db12221283efb9d1ee
+
+depends_lib-append  port:bzip2 \
+                    port:libxml2 \
+                    port:zlib \
+                    port:pkgconfig
+
+variant arrays description {Enable libSBML support for the SBML Level 3 Arrays and Sets ('arrays')} {
+    configure.args-append   -DENABLE_ARRAYS:BOOL=ON
+}
+
+variant comp description {Enable libSBML support for the SBML Level 3 Hierarchical Model ('comp')} {
+    configure.args-append   -DENABLE_COMP:BOOL=ON
+}
+
+variant distrib description {Enable libSBML support for the SBML Level 3 Distributions ('distrib')} {
+    configure.args-append   -DENABLE_DISTRIB:BOOL=ON
+}
+
+variant dyn description {Enable libSBML support for the SBML Level 3 Dynamic Structures ('dyn')} {
+    configure.args-append   -DENABLE_DYN:BOOL=ON
+}
+
+variant fbc description {Enable libSBML support for the SBML Level 3 Flux Balance Constraints ('fbc')} {
+    configure.args-append   -DENABLE_FBC:BOOL=ON
+}
+
+variant groups description {Enable libSBML support for the SBML Level 3 Groups ('groups')} {
+    configure.args-append   -DENABLE_GROUPS:BOOL=ON
+}
+
+variant layout description {Enable libSBML support for the SBML Level 3 Graphical Layout ('layout')} {
+    configure.args-append   -DENABLE_LAYOUT:BOOL=ON
+}
+
+variant multi description {Enable libSBML support for the SBML Level 3 Multistate and Multicomponent ('multi')} {
+    configure.args-append   -DENABLE_MULTI:BOOL=ON
+}
+
+variant qual description {Enable libSBML support for the SBML Level 3 Qualitative Models ('qual')} {
+    configure.args-append   -DENABLE_QUAL:BOOL=ON
+}
+
+variant render description {Enable libSBML support for the SBML Level 3 Rendering ('render')} {
+    configure.args-append   -DENABLE_RENDER:BOOL=ON
+}
+
+variant req description {Enable libSBML support for the SBML Level 3 Required Elements ('req')} {
+    configure.args-append   -DENABLE_REQUIREDELEMENTS:BOOL=ON
+}
+
+variant spatial description {Enable libSBML support for the SBML Level 3 Spatial Processes ('spatial')} {
+    configure.args-append   -DENABLE_SPATIAL:BOOL=ON
+}
+
+variant python27 conflicts python34 description {Configure to use Python version 2.7} {
+    depends_lib-append      port:python27
+    configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
+}
+
+variant python34 conflicts python27 description {Configure to use Python version 3.4} {
+    depends_lib-append      port:python34
+    configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python3.4
+}
+
+livecheck.regex     /libSBML-(\[0-9.\]+)-Source${extract.suffix}

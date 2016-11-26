@@ -1,0 +1,64 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem 1.0
+PortGroup  github 1.0
+
+github.setup    google protobuf 3.1.0 v
+name            protobuf31-cpp
+categories      devel
+maintainers     blair
+license         BSD
+description     Encode data in an efficient yet extensible format.
+conflicts       protobuf-cpp
+
+long_description \
+                Google Protocol Buffers are a flexible, efficient, \
+                automated mechanism for serializing structured data -- \
+                think XML, but smaller, faster, and simpler.  You \
+                define how you want your data to be structured once, \
+                then you can use special generated source code to \
+                easily write and read your structured data to and from \
+                a variety of data streams and using a variety of \
+                languages.  You can even update your data structure \
+                without breaking deployed programs that are compiled \
+                against the "old" format.  You specify how you want \
+                the information you're serializing to be structured by \
+                defining protocol buffer message types in .proto \
+                files.  Each protocol buffer message is a small \
+                logical record of information, containing a series of \
+                name-value pairs.
+
+github.tarball_from releases
+distname        protobuf-cpp-${version}
+worksrcdir      protobuf-${version}
+
+pre-fetch {
+    if {${os.platform} eq "darwin" && ${os.major} < 11} {
+        ui_error "${name} uses thread-local storage which is not supported on Mac OS X 10.6 or older."
+        return -code error "incompatible Mac OS X version"
+    }
+}
+
+checksums       rmd160 a7be4888dd97e899364c3264875a988bac349acf \
+                sha256 51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6
+
+platforms       darwin
+
+depends_lib     port:zlib
+
+configure.cflags-append     -g
+configure.cppflags-append   -g
+
+post-destroot {
+    set docdir ${destroot}${prefix}/share/doc/${name}
+
+    xinstall -d -m 755 ${docdir}
+
+    foreach f {CHANGES.txt CONTRIBUTORS.txt LICENSE README.md editors examples} {
+        file copy ${worksrcpath}/${f} ${docdir}
+    }
+}
+
+test.run    yes
+test.target check

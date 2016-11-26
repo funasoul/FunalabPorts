@@ -1,0 +1,44 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+PortGroup           python 1.0
+PortGroup           github 1.0
+
+github.setup        tensorflow tensorflow 0.11.0 v
+name                py-tensorflow
+maintainers         nomaintainer
+license             Apache-2
+supported_archs     noarch
+
+description         Computation using data flow graphs for scalable machine learning
+long_description    ${description}
+
+homepage            http://tensorflow.org/
+platforms           darwin
+
+python.versions     27 34
+
+categories-append   science
+
+if {${name} ne ${subport}} {
+    checksums           rmd160  d89f1570fc7029202c0d7ebe8aa164973096caa3 \
+                        sha256  a814e143b7cedc7855550db419e947f14133b216acc902718bfc58c79f817099
+
+    depends_lib-append  port:py${python.version}-numpy \
+                        port:py${python.version}-protobuf31 \
+                        port:py${python.version}-pip \
+                        port:py${python.version}-six
+                        
+    livecheck.type      none
+    fetch {}
+    configure {}
+    build {}
+    destroot.cmd        pip install
+    destroot.target     {}
+    destroot.args       --install-option="--prefix=${destroot}" --upgrade https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-0.11.0rc2-py2-none-any.whl
+    destroot.pre_args   {}
+    destroot.post_args  {}
+    destroot.destdir    {}
+    install {}
+}

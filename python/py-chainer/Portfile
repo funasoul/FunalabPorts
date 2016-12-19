@@ -25,7 +25,7 @@ if {${name} ne ${subport}} {
 
     depends_lib-append  port:py${python.version}-numpy \
                         port:py${python.version}-filelock \
-                        port:py${python.version}-scikit-learn
+                        port:py${python.version}-six
 
     post-destroot {
         # install additional documents
@@ -38,6 +38,14 @@ if {${name} ne ${subport}} {
         foreach f [glob -directory ${worksrcpath}/examples *] {
             copy $f ${destroot}${docdir}/examples/[file tail $f]
         }
+    }
+
+    variant imagedataset description {Support image dataset} {
+        depends_lib-append      port:py${python.version}-Pillow
+    }
+
+    variant hdf5 description {Support HDF5 serialization} {
+        depends_lib-append      port:py${python.version}-h5py
     }
 
     livecheck.type      none

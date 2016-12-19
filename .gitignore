@@ -4,6 +4,18 @@
 *.slo
 *.obj
 
+# from MacOSX
+.DS_Store
+
+# GDB
+.gdb_history
+
+# Emacs backup files
+*~
+
+# Vim
+.*.swp
+
 # precompiled headers
 *.gch
 *.pch

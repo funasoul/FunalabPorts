@@ -95,4 +95,9 @@ variant python34 conflicts python27 description {Configure to use Python version
     configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python3.4
 }
 
+variant java description {Configure to use Java} {
+    depends_build-append   port:swig port:swig-java
+    configure.args-append  -DWITH_JAVA=BOOL:ON
+}
+
 livecheck.regex     /libSBML-(\[0-9.\]+)-Source${extract.suffix}

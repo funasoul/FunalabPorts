@@ -1,0 +1,28 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: $
+
+PortSystem              1.0
+PortGroup               python 1.0
+PortGroup               github 1.0
+
+github.setup            satoshi03 slack-python-webhook 1.0.5 v
+
+
+name                    py-slackweb
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             Slack Bot for WebHook
+long_description        Very simple slack client by using incoming-webhook.
+license                 MIT
+homepage                https://github.com/satoshi03/slack-python-webhook
+
+checksums               rmd160  b781812253b25d6208a34cb052f5034a39b97c5c \
+                        sha256  bc87611fa4daab4c7340fff74b085d3a7ec9455da7efe0c0cefaa336f6d70118
+
+python.versions         27 33 34 35
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools
+}

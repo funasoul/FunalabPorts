@@ -5,7 +5,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        pfnet chainer 1.24.0 v
+github.setup        chainer chainer 1.24.0 v
 name                py-chainer
 maintainers         hum openmaintainer
 license             MIT
@@ -20,8 +20,8 @@ platforms           darwin
 python.versions     27 34
 
 if {${name} ne ${subport}} {
-    checksums           rmd160  a198a6e88cee2662caf51a17338adbd8b0ac233a \
-                        sha256  c384825ed362eb576b61ff00a7879f2c5e22d4d91d6151b756a45667479cdca4
+    checksums           rmd160  42d1f80b4415de0f33d1fdbd9d29cdc5281fa56a \
+                        sha256  a8c87992ed7685b671cb9cee76f0cbbdf4a142c7e173db1b89a21db095cc1a06
 
     depends_lib-append  port:py${python.version}-numpy \
                         port:py${python.version}-filelock \

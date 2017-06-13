@@ -1,0 +1,1558 @@
+diff --git .travis.yml .travis.yml
+index a86c1260..69174bdf 100644
+--- .travis.yml
++++ .travis.yml
+@@ -4,59 +4,21 @@ cache:
+   - pip
+   - ccache
+ 
+-matrix:
+-  include:
+-    - os: linux
+-      python: "2.7"
+-    - os: linux
+-      python: "3.4"
+-    - os: linux
+-      python: "3.5.1"
+-
+-    - os: osx
+-      language: generic
+-      env:
+-      - PYTHON_VERSION=2.7.10
+-      - PYENV_ROOT=~/.pyenv
+-      - PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
+-    - os: osx
+-      language: generic
+-      env:
+-      - PYTHON_VERSION=3.4.3
+-      - PYENV_ROOT=~/.pyenv
+-      - PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
+-    - os: osx
+-      language: generic
+-      env:
+-      - PYTHON_VERSION=3.5.1
+-      - PYENV_ROOT=~/.pyenv
+-      - PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
+-
+-before_install:
+-  - if [[ $TRAVIS_OS_NAME = "osx" ]]; then
+-      brew update >/dev/null;
+-      brew outdated pyenv || brew upgrade --quiet pyenv;
+-      brew install homebrew/boneyard/pyenv-pip-rehash;
+-
+-      PYTHON_CONFIGURE_OPTS="--enable-unicode=ucs2" pyenv install -ks $PYTHON_VERSION;
+-      pyenv global $PYTHON_VERSION;
+-      python --version;
+-
+-      brew install homebrew/science/hdf5;
+-    fi
++python:
++  - "2.7"
++  - "3.4"
++  - "3.5"
+ 
+ install:
+   - pip install -U pip wheel
+   - pip install cython
+   - python setup.py sdist --cupy-no-cuda
+-  - pip install nose hacking mock autopep8
++  - pip install autopep8 hacking
+ 
+ script:
+   - flake8 --config=.flake8.cython
+   - autopep8 -r . --global-config .pep8 --diff | tee check_autopep8
+   - test ! -s check_autopep8
+-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+-      READTHEDOCS=True python setup.py develop;
+-    fi
++  - READTHEDOCS=True python setup.py develop
+ 
+ sudo: false
+diff --git appveyor.yml appveyor.yml
+deleted file mode 100644
+index 3832819e..00000000
+--- appveyor.yml
++++ /dev/null
+@@ -1,71 +0,0 @@
+-environment:
+-  global:
+-    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+-    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+-    # See: http://stackoverflow.com/a/13751649/163740
+-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+-
+-  matrix:
+-
+-    # Pre-installed Python versions, which Appveyor may upgrade to
+-    # a later point release.
+-    # See: http://www.appveyor.com/docs/installed-software#python
+-
+-    - PYTHON: "C:\\Miniconda"
+-      PYTHON_VERSION: "2.7.x"
+-      PYTHON_ARCH: "32"
+-
+-    - PYTHON: "C:\\Miniconda-x64"
+-      PYTHON_VERSION: "2.7.x"
+-      PYTHON_ARCH: "64"
+-
+-#    - PYTHON: "C:\\Miniconda3"
+-#      PYTHON_VERSION: "3.4.x"
+-#      PYTHON_ARCH: "32"
+-
+-#    - PYTHON: "C:\\Miniconda3-x64"
+-#      PYTHON_VERSION: "3.4.x"
+-#      PYTHON_ARCH: "64"
+-
+-    - PYTHON: "C:\\Miniconda35"
+-      PYTHON_VERSION: "3.5.x"
+-      PYTHON_ARCH: "32"
+-
+-    - PYTHON: "C:\\Miniconda35-x64"
+-      PYTHON_VERSION: "3.5.x"
+-      PYTHON_ARCH: "64"
+-
+-install:
+-  - ECHO "Filesystem root:"
+-  - ps: "ls \"C:/\""
+-
+-  - ECHO "Installed SDKs:"
+-  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
+-
+-  # Install Python (from the official .msi of http://python.org) and pip when
+-  # not already installed.
+-  - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
+-
+-  # Prepend newly installed Python to the PATH of this build (this cannot be
+-  # done from inside the powershell script as it would require to restart
+-  # the parent CMD process).
+-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+-
+-  # Check that we have the expected version and architecture for Python
+-  - "python --version"
+-  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+-
+-  - "conda install -y -q setuptools"
+-  - "conda install -y -q cython"
+-  - "conda install -y -q h5py"
+-
+-build_script:
+-  # Build the compiled extension
+-  - "%CMD_IN_ENV% python setup.py build install -vvvv --cupy-no-cuda"
+-
+-test_script:
+-  # Run the project tests
+-  - "%CMD_IN_ENV% pip install nose mock hacking"
+-  - "flake8"
+-  - "cd tests\\install_tests"
+-  - "nosetests -a \"!gpu,!slow\""
+diff --git appveyor/install.ps1 appveyor/install.ps1
+deleted file mode 100644
+index 160ba55c..00000000
+--- appveyor/install.ps1
++++ /dev/null
+@@ -1,229 +0,0 @@
+-# Sample script to install Python and pip under Windows
+-# Authors: Olivier Grisel, Jonathan Helmus, Kyle Kastner, and Alex Willmer
+-# License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+-
+-$MINICONDA_URL = "http://repo.continuum.io/miniconda/"
+-$BASE_URL = "https://www.python.org/ftp/python/"
+-$GET_PIP_URL = "https://bootstrap.pypa.io/get-pip.py"
+-$GET_PIP_PATH = "C:\get-pip.py"
+-
+-$PYTHON_PRERELEASE_REGEX = @"
+-(?x)
+-(?<major>\d+)
+-\.
+-(?<minor>\d+)
+-\.
+-(?<micro>\d+)
+-(?<prerelease>[a-z]{1,2}\d+)
+-"@
+-
+-
+-function Download ($filename, $url) {
+-    $webclient = New-Object System.Net.WebClient
+-
+-    $basedir = $pwd.Path + "\"
+-    $filepath = $basedir + $filename
+-    if (Test-Path $filename) {
+-        Write-Host "Reusing" $filepath
+-        return $filepath
+-    }
+-
+-    # Download and retry up to 3 times in case of network transient errors.
+-    Write-Host "Downloading" $filename "from" $url
+-    $retry_attempts = 2
+-    for ($i = 0; $i -lt $retry_attempts; $i++) {
+-        try {
+-            $webclient.DownloadFile($url, $filepath)
+-            break
+-        }
+-        Catch [Exception]{
+-            Start-Sleep 1
+-        }
+-    }
+-    if (Test-Path $filepath) {
+-        Write-Host "File saved at" $filepath
+-    } else {
+-        # Retry once to get the error message if any at the last try
+-        $webclient.DownloadFile($url, $filepath)
+-    }
+-    return $filepath
+-}
+-
+-
+-function ParsePythonVersion ($python_version) {
+-    if ($python_version -match $PYTHON_PRERELEASE_REGEX) {
+-        return ([int]$matches.major, [int]$matches.minor, [int]$matches.micro,
+-                $matches.prerelease)
+-    }
+-    $version_obj = [version]$python_version
+-    return ($version_obj.major, $version_obj.minor, $version_obj.build, "")
+-}
+-
+-
+-function DownloadPython ($python_version, $platform_suffix) {
+-    $major, $minor, $micro, $prerelease = ParsePythonVersion $python_version
+-
+-    if (($major -le 2 -and $micro -eq 0) `
+-        -or ($major -eq 3 -and $minor -le 2 -and $micro -eq 0) `
+-        ) {
+-        $dir = "$major.$minor"
+-        $python_version = "$major.$minor$prerelease"
+-    } else {
+-        $dir = "$major.$minor.$micro"
+-    }
+-
+-    if ($prerelease) {
+-        if (($major -le 2) `
+-            -or ($major -eq 3 -and $minor -eq 1) `
+-            -or ($major -eq 3 -and $minor -eq 2) `
+-            -or ($major -eq 3 -and $minor -eq 3) `
+-            ) {
+-            $dir = "$dir/prev"
+-        }
+-    }
+-
+-    if (($major -le 2) -or ($major -le 3 -and $minor -le 4)) {
+-        $ext = "msi"
+-        if ($platform_suffix) {
+-            $platform_suffix = ".$platform_suffix"
+-        }
+-    } else {
+-        $ext = "exe"
+-        if ($platform_suffix) {
+-            $platform_suffix = "-$platform_suffix"
+-        }
+-    }
+-
+-    $filename = "python-$python_version$platform_suffix.$ext"
+-    $url = "$BASE_URL$dir/$filename"
+-    $filepath = Download $filename $url
+-    return $filepath
+-}
+-
+-
+-function InstallPython ($python_version, $architecture, $python_home) {
+-    Write-Host "Installing Python" $python_version "for" $architecture "bit architecture to" $python_home
+-    if (Test-Path $python_home) {
+-        Write-Host $python_home "already exists, skipping."
+-        return $false
+-    }
+-    if ($architecture -eq "32") {
+-        $platform_suffix = ""
+-    } else {
+-        $platform_suffix = "amd64"
+-    }
+-    $installer_path = DownloadPython $python_version $platform_suffix
+-    $installer_ext = [System.IO.Path]::GetExtension($installer_path)
+-    Write-Host "Installing $installer_path to $python_home"
+-    $install_log = $python_home + ".log"
+-    if ($installer_ext -eq '.msi') {
+-        InstallPythonMSI $installer_path $python_home $install_log
+-    } else {
+-        InstallPythonEXE $installer_path $python_home $install_log
+-    }
+-    if (Test-Path $python_home) {
+-        Write-Host "Python $python_version ($architecture) installation complete"
+-    } else {
+-        Write-Host "Failed to install Python in $python_home"
+-        Get-Content -Path $install_log
+-        Exit 1
+-    }
+-}
+-
+-
+-function InstallPythonEXE ($exepath, $python_home, $install_log) {
+-    $install_args = "/quiet InstallAllUsers=1 TargetDir=$python_home"
+-    RunCommand $exepath $install_args
+-}
+-
+-
+-function InstallPythonMSI ($msipath, $python_home, $install_log) {
+-    $install_args = "/qn /log $install_log /i $msipath TARGETDIR=$python_home"
+-    $uninstall_args = "/qn /x $msipath"
+-    RunCommand "msiexec.exe" $install_args
+-    if (-not(Test-Path $python_home)) {
+-        Write-Host "Python seems to be installed else-where, reinstalling."
+-        RunCommand "msiexec.exe" $uninstall_args
+-        RunCommand "msiexec.exe" $install_args
+-    }
+-}
+-
+-function RunCommand ($command, $command_args) {
+-    Write-Host $command $command_args
+-    Start-Process -FilePath $command -ArgumentList $command_args -Wait -Passthru
+-}
+-
+-
+-function InstallPip ($python_home) {
+-    $pip_path = $python_home + "\Scripts\pip.exe"
+-    $python_path = $python_home + "\python.exe"
+-    if (-not(Test-Path $pip_path)) {
+-        Write-Host "Installing pip..."
+-        $webclient = New-Object System.Net.WebClient
+-        $webclient.DownloadFile($GET_PIP_URL, $GET_PIP_PATH)
+-        Write-Host "Executing:" $python_path $GET_PIP_PATH
+-        & $python_path $GET_PIP_PATH
+-    } else {
+-        Write-Host "pip already installed."
+-    }
+-}
+-
+-
+-function DownloadMiniconda ($python_version, $platform_suffix) {
+-    if ($python_version -eq "3.4") {
+-        $filename = "Miniconda3-3.5.5-Windows-" + $platform_suffix + ".exe"
+-    } else {
+-        $filename = "Miniconda-3.5.5-Windows-" + $platform_suffix + ".exe"
+-    }
+-    $url = $MINICONDA_URL + $filename
+-    $filepath = Download $filename $url
+-    return $filepath
+-}
+-
+-
+-function InstallMiniconda ($python_version, $architecture, $python_home) {
+-    Write-Host "Installing Python" $python_version "for" $architecture "bit architecture to" $python_home
+-    if (Test-Path $python_home) {
+-        Write-Host $python_home "already exists, skipping."
+-        return $false
+-    }
+-    if ($architecture -eq "32") {
+-        $platform_suffix = "x86"
+-    } else {
+-        $platform_suffix = "x86_64"
+-    }
+-    $filepath = DownloadMiniconda $python_version $platform_suffix
+-    Write-Host "Installing" $filepath "to" $python_home
+-    $install_log = $python_home + ".log"
+-    $args = "/S /D=$python_home"
+-    Write-Host $filepath $args
+-    Start-Process -FilePath $filepath -ArgumentList $args -Wait -Passthru
+-    if (Test-Path $python_home) {
+-        Write-Host "Python $python_version ($architecture) installation complete"
+-    } else {
+-        Write-Host "Failed to install Python in $python_home"
+-        Get-Content -Path $install_log
+-        Exit 1
+-    }
+-}
+-
+-
+-function InstallMinicondaPip ($python_home) {
+-    $pip_path = $python_home + "\Scripts\pip.exe"
+-    $conda_path = $python_home + "\Scripts\conda.exe"
+-    if (-not(Test-Path $pip_path)) {
+-        Write-Host "Installing pip..."
+-        $args = "install --yes pip"
+-        Write-Host $conda_path $args
+-        Start-Process -FilePath "$conda_path" -ArgumentList $args -Wait -Passthru
+-    } else {
+-        Write-Host "pip already installed."
+-    }
+-}
+-
+-function main () {
+-    InstallPython $env:PYTHON_VERSION $env:PYTHON_ARCH $env:PYTHON
+-    InstallPip $env:PYTHON
+-}
+-
+-main
+diff --git appveyor/run_with_env.cmd appveyor/run_with_env.cmd
+deleted file mode 100644
+index 5da547c4..00000000
+--- appveyor/run_with_env.cmd
++++ /dev/null
+@@ -1,88 +0,0 @@
+-:: To build extensions for 64 bit Python 3, we need to configure environment
+-:: variables to use the MSVC 2010 C++ compilers from GRMSDKX_EN_DVD.iso of:
+-:: MS Windows SDK for Windows 7 and .NET Framework 4 (SDK v7.1)
+-::
+-:: To build extensions for 64 bit Python 2, we need to configure environment
+-:: variables to use the MSVC 2008 C++ compilers from GRMSDKX_EN_DVD.iso of:
+-:: MS Windows SDK for Windows 7 and .NET Framework 3.5 (SDK v7.0)
+-::
+-:: 32 bit builds, and 64-bit builds for 3.5 and beyond, do not require specific
+-:: environment configurations.
+-::
+-:: Note: this script needs to be run with the /E:ON and /V:ON flags for the
+-:: cmd interpreter, at least for (SDK v7.0)
+-::
+-:: More details at:
+-:: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
+-:: http://stackoverflow.com/a/13751649/163740
+-::
+-:: Author: Olivier Grisel
+-:: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+-::
+-:: Notes about batch files for Python people:
+-::
+-:: Quotes in values are literally part of the values:
+-::      SET FOO="bar"
+-:: FOO is now five characters long: " b a r "
+-:: If you don't want quotes, don't include them on the right-hand side.
+-::
+-:: The CALL lines at the end of this file look redundant, but if you move them
+-:: outside of the IF clauses, they do not run properly in the SET_SDK_64==Y
+-:: case, I don't know why.
+-@ECHO OFF
+-
+-SET COMMAND_TO_RUN=%*
+-SET WIN_SDK_ROOT=C:\Program Files\Microsoft SDKs\Windows
+-SET WIN_WDK=c:\Program Files (x86)\Windows Kits\10\Include\wdf
+-
+-:: Extract the major and minor versions, and allow for the minor version to be
+-:: more than 9.  This requires the version number to have two dots in it.
+-SET MAJOR_PYTHON_VERSION=%PYTHON_VERSION:~0,1%
+-IF "%PYTHON_VERSION:~3,1%" == "." (
+-    SET MINOR_PYTHON_VERSION=%PYTHON_VERSION:~2,1%
+-) ELSE (
+-    SET MINOR_PYTHON_VERSION=%PYTHON_VERSION:~2,2%
+-)
+-
+-:: Based on the Python version, determine what SDK version to use, and whether
+-:: to set the SDK for 64-bit.
+-IF %MAJOR_PYTHON_VERSION% == 2 (
+-    SET WINDOWS_SDK_VERSION="v7.0"
+-    SET SET_SDK_64=Y
+-) ELSE (
+-    IF %MAJOR_PYTHON_VERSION% == 3 (
+-        SET WINDOWS_SDK_VERSION="v7.1"
+-        IF %MINOR_PYTHON_VERSION% LEQ 4 (
+-            SET SET_SDK_64=Y
+-        ) ELSE (
+-            SET SET_SDK_64=N
+-            IF EXIST "%WIN_WDK%" (
+-                :: See: https://connect.microsoft.com/VisualStudio/feedback/details/1610302/
+-                REN "%WIN_WDK%" 0wdf
+-            )
+-        )
+-    ) ELSE (
+-        ECHO Unsupported Python version: "%MAJOR_PYTHON_VERSION%"
+-        EXIT 1
+-    )
+-)
+-
+-IF %PYTHON_ARCH% == 64 (
+-    IF %SET_SDK_64% == Y (
+-        ECHO Configuring Windows SDK %WINDOWS_SDK_VERSION% for Python %MAJOR_PYTHON_VERSION% on a 64 bit architecture
+-        SET DISTUTILS_USE_SDK=1
+-        SET MSSdk=1
+-        "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
+-        "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Bin\SetEnv.cmd" /x64 /release
+-        ECHO Executing: %COMMAND_TO_RUN%
+-        call %COMMAND_TO_RUN% || EXIT 1
+-    ) ELSE (
+-        ECHO Using default MSVC build environment for 64 bit architecture
+-        ECHO Executing: %COMMAND_TO_RUN%
+-        call %COMMAND_TO_RUN% || EXIT 1
+-    )
+-) ELSE (
+-    ECHO Using default MSVC build environment for 32 bit architecture
+-    ECHO Executing: %COMMAND_TO_RUN%
+-    call %COMMAND_TO_RUN% || EXIT 1
+-)
+diff --git cupy/cuda/cupy_cusparse.h cupy/cuda/cupy_cusparse.h
+new file mode 100644
+index 00000000..fa13a4a0
+--- /dev/null
++++ cupy/cuda/cupy_cusparse.h
+@@ -0,0 +1,171 @@
++// This file is a stub header file of cusparse for Read the Docs.
++
++#ifndef INCLUDE_GUARD_CUPY_CUSPARSE_H
++#define INCLUDE_GUARD_CUPY_CUSPARSE_H
++
++#ifndef CUPY_NO_CUDA
++#  include <cusparse.h>
++
++#else  // CUPY_NO_CUDA
++extern "C" {
++
++typedef enum {} cusparseIndexBase_t;
++typedef enum {
++  CUSPARSE_STATUS_SUCCESS=0,
++}  cusparseStatus_t;
++
++typedef void* cusparseHandle_t;
++typedef void* cusparseMatDescr_t;
++
++typedef enum {} cusparseMatrixType_t;
++typedef enum {} cusparseOperation_t;
++typedef enum {} cusparsePointerMode_t;
++typedef enum {} cusparseAction_t;
++
++// cuSPARSE Helper Function
++cusparseStatus_t cusparseCreate(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseCreateMatDescr(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDestroy(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseSetMatIndexBase(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseSetMatType(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseSetPointerMode(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++
++// cuSPARSE Level1 Function
++cusparseStatus_t cusparseSgthr(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDgthr(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++// cuSPARSE Level2 Function
++cusparseStatus_t cusparseScsrmv(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsrmv(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++
++// cuSPARSE Level3 Function
++cusparseStatus_t cusparseScsrmm(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsrmm(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseScsrmm2(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsrmm2(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++
++// cuSPARSE Extra Function
++cusparseStatus_t cusparseXcsrgeamNnz(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseScsrgeam(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsrgeam(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcsrgemmNnz(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseScsrgemm(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsrgemm(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++
++// cuSPARSE Format Convrsion
++cusparseStatus_t cusparseXcoo2csr(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcsr2coo(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseScsr2csc(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsr2csc(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseScsr2dense(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseDcsr2dense(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseCreateIdentityPermutation(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcoosort_bufferSizeExt(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcoosortByRow(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcsrsort_bufferSizeExt(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcsrsort(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcscsort_bufferSizeExt(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++cusparseStatus_t cusparseXcscsort(...) {
++  return CUSPARSE_STATUS_SUCCESS;
++}
++
++}  // extern "C"
++
++#endif  // CUPY_NO_CUDA
++
++#endif  // INCLUDE_GUARD_CUPY_CUSPARSE_H
+diff --git cupy/cuda/cusparse.pxd cupy/cuda/cusparse.pxd
+new file mode 100644
+index 00000000..bd699d2b
+--- /dev/null
++++ cupy/cuda/cusparse.pxd
+@@ -0,0 +1,35 @@
++cdef extern from *:
++    ctypedef int IndexBase 'cusparseIndexBase_t'
++    ctypedef int Status 'cusparseStatus_t'
++
++    ctypedef void* Handle 'cusparseHandle_t'
++
++    ctypedef void* MatDescr 'cusparseMatDescr_t'
++
++    ctypedef int MatrixType 'cusparseMatrixType_t'
++
++    ctypedef int Operation 'cusparseOperation_t'
++
++    ctypedef int PointerMode 'cusparsePointerMode_t'
++
++    ctypedef int Action 'cusparseAction_t'
++
++
++cpdef enum:
++    CUSPARSE_POINTER_MODE_HOST = 0
++    CUSPARSE_POINTER_MODE_DEVICE = 1
++
++    CUSPARSE_ACTION_SYMBOLIC = 0
++    CUSPARSE_ACTION_NUMERIC = 1
++
++    CUSPARSE_INDEX_BASE_ZERO = 0
++    CUSPARSE_INDEX_BASE_ONE = 1
++
++    CUSPARSE_MATRIX_TYPE_GENERAL = 0
++    CUSPARSE_MATRIX_TYPE_SYMMETRIC = 1
++    CUSPARSE_MATRIX_TYPE_HERMITIAN = 2
++    CUSPARSE_MATRIX_TYPE_TRIANGULAR = 3
++
++    CUSPARSE_OPERATION_NON_TRANSPOSE = 0
++    CUSPARSE_OPERATION_TRANSPOSE = 1
++    CUSPARSE_OPERATION_CONJUGATE_TRANSPOSE = 2
+diff --git cupy/cuda/cusparse.pyx cupy/cuda/cusparse.pyx
+new file mode 100644
+index 00000000..d400a17b
+--- /dev/null
++++ cupy/cuda/cusparse.pyx
+@@ -0,0 +1,561 @@
++cimport cython
++
++cdef extern from "cupy_cusparse.h":
++
++    # cuSPARSE Helper Function
++    Status cusparseCreate(Handle *handle)
++    Status cusparseCreateMatDescr(MatDescr descr)
++    Status cusparseDestroy(Handle handle)
++    Status cusparseSetMatIndexBase(MatDescr descr, IndexBase base)
++    Status cusparseSetMatType(MatDescr descr, MatrixType type)
++    Status cusparseSetPointerMode(Handle handle, PointerMode mode)
++
++    # cuSPARSE Level1 Function
++    Status cusparseSgthr(
++        Handle handle, int nnz, const float *y, float *xVal, const int *xInd,
++        IndexBase idxBase)
++
++    Status cusparseDgthr(
++        Handle handle, int nnz, const double *y, double *xVal, const int *xInd,
++        IndexBase idxBase)
++
++    # cuSPARSE Level2 Function
++    Status cusparseScsrmv(
++        Handle handle, Operation transA, int m, int n, int nnz,
++        const float *alpha, MatDescr descrA, const float *csrSortedValA,
++        const int *csrSortedRowPtrA, const int *csrSortedColIndA,
++        const float *x, const float *beta, float *y)
++
++    Status cusparseDcsrmv(
++        Handle handle, Operation transA, int m, int n, int nnz,
++        const double *alpha, MatDescr descrA, const double *csrSortedValA,
++        const int *csrSortedRowPtrA, const int *csrSortedColIndA,
++        const double *x, const double *beta, double *y)
++
++    # cuSPARSE Level3 Function
++    Status cusparseScsrmm(
++        Handle handle, Operation transA, int m, int n, int k, int nnz,
++        const float *alpha, const MatDescr descrA, const float *csrSortedValA,
++        const int *csrSortedRowPtrA, const int *csrSortedColIndA,
++        const float *B, int ldb, const float *beta, float *C, int ldc)
++
++    Status cusparseDcsrmm(
++        Handle handle, Operation transA, int m, int n, int k, int nnz,
++        const double *alpha, const MatDescr descrA,
++        const double *csrSortedValA,
++        const int *csrSortedRowPtrA, const int *csrSortedColIndA,
++        const double *B, int ldb, const double *beta, double *C, int ldc)
++
++    Status cusparseScsrmm2(
++        Handle handle, Operation transA, Operation transB, int m, int n, int k,
++        int nnz, const float *alpha, const MatDescr descrA,
++        const float *csrValA, const int *csrRowPtrA, const int *csrColIndA,
++        const float *B, int ldb, const float *beta, float *C, int ldc)
++
++    Status cusparseDcsrmm2(
++        Handle handle, Operation transA, Operation transB, int m, int n, int k,
++        int nnz, const double *alpha, const MatDescr descrA,
++        const double *csrValA, const int *csrRowPtrA, const int *csrColIndA,
++        const double *B, int ldb, const double *beta, double *C, int ldc)
++
++    # cuSPARSE Extra Function
++    Status cusparseXcsrgeamNnz(
++        Handle handle, int m, int n, const MatDescr descrA, int nnzA,
++        const int *csrRowPtrA, const int *csrColIndA, const MatDescr descrB,
++        int nnzB, const int *csrRowPtrB, const int *csrColIndB,
++        const MatDescr descrC, int *csrRowPtrC, int *nnzTotalDevHostPtr)
++
++    Status cusparseScsrgeam(
++        Handle handle, int m, int n, const float *alpha, const MatDescr descrA,
++        int nnzA, const float *csrValA, const int *csrRowPtrA,
++        const int *csrColIndA, const float *beta, const MatDescr descrB,
++        int nnzB, const float *csrValB, const int *csrRowPtrB,
++        const int *csrColIndB, const MatDescr descrC, float *csrValC,
++        int *csrRowPtrC, int *csrColIndC)
++
++    Status cusparseDcsrgeam(
++        Handle handle, int m, int n, const double *alpha,
++        const MatDescr descrA,
++        int nnzA, const double *csrValA, const int *csrRowPtrA,
++        const int *csrColIndA, const double *beta, const MatDescr descrB,
++        int nnzB, const double *csrValB, const int *csrRowPtrB,
++        const int *csrColIndB, const MatDescr descrC, double *csrValC,
++        int *csrRowPtrC, int *csrColIndC)
++
++    Status cusparseXcsrgemmNnz(
++        Handle handle, Operation transA, Operation transB, int m, int n, int k,
++        const MatDescr descrA, const int nnzA, const int *csrRowPtrA,
++        const int *csrColIndA, const MatDescr descrB, const int nnzB,
++        const int *csrRowPtrB, const int *csrColIndB,
++        const MatDescr descrC, int *csrRowPtrC, int *nnzTotalDevHostPtr)
++
++    Status cusparseScsrgemm(
++        Handle handle, Operation transA, Operation transB, int m, int n, int k,
++        const MatDescr descrA, const int nnzA, const float *csrValA,
++        const int *csrRowPtrA, const int *csrColIndA, const MatDescr descrB,
++        const int nnzB, const float *csrValB, const int *csrRowPtrB,
++        const int *csrColIndB, const MatDescr descrC, float *csrValC,
++        const int *csrRowPtrC, int *csrColIndC)
++
++    Status cusparseDcsrgemm(
++        Handle handle, Operation transA, Operation transB, int m, int n, int k,
++        const MatDescr descrA, const int nnzA, const double *csrValA,
++        const int *csrRowPtrA, const int *csrColIndA, const MatDescr descrB,
++        const int nnzB, const double *csrValB, const int *csrRowPtrB,
++        const int *csrColIndB, const MatDescr descrC, double *csrValC,
++        const int *csrRowPtrC, int *csrColIndC)
++
++    # cuSPARSE Format Convrsion
++    Status cusparseXcoo2csr(
++        Handle handle, const int *cooRowInd, int nnz, int m, int *csrRowPtr,
++        IndexBase idxBase)
++
++    Status cusparseXcsr2coo(
++        Handle handle, const int *csrRowPtr, int nnz, int m, int *cooRowInd,
++        IndexBase idxBase)
++
++    Status cusparseScsr2csc(
++        Handle handle, int m, int n, int nnz, const float *csrVal,
++        const int *csrRowPtr, const int *csrColInd, float *cscVal,
++        int *cscRowInd, int *cscColPtr, Action copyValues, IndexBase idxBase)
++
++    Status cusparseDcsr2csc(
++        Handle handle, int m, int n, int nnz, const double *csrVal,
++        const int *csrRowPtr, const int *csrColInd, double *cscVal,
++        int *cscRowInd, int *cscColPtr, Action copyValues, IndexBase idxBase)
++
++    Status cusparseScsr2dense(
++        Handle handle, int m, int n, const MatDescr descrA,
++        const float *csrSortedValA, const int *csrSortedRowPtrA,
++        const int *csrSortedColIndA, float *A, int lda)
++
++    Status cusparseDcsr2dense(
++        Handle handle, int m, int n, const MatDescr descrA,
++        const double *csrSortedValA, const int *csrSortedRowPtrA,
++        const int *csrSortedColIndA, double *A, int lda)
++
++    Status cusparseCreateIdentityPermutation(
++        Handle handle, int n, int *p)
++
++    Status cusparseXcoosort_bufferSizeExt(
++        Handle handle, int m, int n, int nnz, const int *cooRows,
++        const int *cooCols, size_t *pBufferSizeInBytes)
++
++    Status cusparseXcoosortByRow(
++        Handle handle, int m, int n, int nnz, int *cooRows, int *cooCols,
++        int *P, void *pBuffer)
++
++    Status cusparseXcsrsort_bufferSizeExt(
++        Handle handle, int m, int n, int nnz, const int *csrRowPtr,
++        const int *csrColInd, size_t *pBufferSizeInBytes)
++
++    Status cusparseXcsrsort(
++        Handle handle, int m, int n, int nnz, const MatDescr descrA,
++        const int *csrRowPtr, int *csrColInd, int *P, void *pBuffer)
++
++    Status cusparseXcscsort_bufferSizeExt(
++        Handle handle, int m, int n, int nnz, const int *cscColPtr,
++        const int *cscRowInd, size_t *pBufferSizeInBytes)
++
++    Status cusparseXcscsort(
++        Handle handle, int m, int n, int nnz, const MatDescr descrA,
++        const int *cscColPtr, int *cscRowInd, int *P, void *pBuffer)
++
++
++cdef dict STATUS = {
++    0: 'CUSPARSE_STATUS_SUCCESS',
++    1: 'CUSPARSE_STATUS_NOT_INITIALIZED',
++    2: 'CUSPARSE_STATUS_ALLOC_FAILED',
++    3: 'CUSPARSE_STATUS_INVALID_VALUE',
++    4: 'CUSPARSE_STATUS_ARCH_MISMATCH',
++    5: 'CUSPARSE_STATUS_MAPPING_ERROR',
++    6: 'CUSPARSE_STATUS_EXECUTION_FAILED',
++    7: 'CUSPARSE_STATUS_INTERNAL_ERROR',
++    8: 'CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED',
++    9: 'CUSPARSE_STATUS_ZERO_PIVOT',
++}
++
++
++class CuSparseError(RuntimeError):
++
++    def __init__(self, int status):
++        self.status = status
++        super(CuSparseError, self).__init__('%s' % (STATUS[status]))
++
++
++@cython.profile(False)
++cpdef inline check_status(int status):
++    if status != 0:
++        raise CuSparseError(status)
++
++
++########################################
++# cuSPARSE Helper Function
++
++cpdef size_t create() except *:
++    cdef Handle handle
++    status = cusparseCreate(& handle)
++    check_status(status)
++    return <size_t >handle
++
++
++cpdef createMatDescr():
++    cdef MatDescr desc
++    status = cusparseCreateMatDescr(& desc)
++    check_status(status)
++    return <size_t>desc
++
++
++cpdef destroy(size_t handle):
++    status = cusparseDestroy(<Handle >handle)
++    check_status(status)
++
++
++cpdef setMatIndexBase(size_t descr, base):
++    status = cusparseSetMatIndexBase(<MatDescr>descr, base)
++    check_status(status)
++
++
++cpdef setMatType(size_t descr, typ):
++    status = cusparseSetMatType(<MatDescr>descr, typ)
++    check_status(status)
++
++
++cpdef setPointerMode(size_t handle, int mode):
++    status = cusparseSetPointerMode(<Handle>handle, <PointerMode>mode)
++    check_status(status)
++
++
++########################################
++# cuSPARSE Level1 Function
++
++cpdef sgthr(size_t handle, int nnz, size_t y, size_t xVal, size_t xInd,
++            int idxBase):
++    status = cusparseSgthr(
++        <Handle>handle, nnz, <const float *>y, <float *>xVal,
++        <const int *>xInd, <IndexBase>idxBase)
++    check_status(status)
++
++cpdef dgthr(size_t handle, int nnz, size_t y, size_t xVal, size_t xInd,
++            int idxBase):
++    status = cusparseDgthr(
++        <Handle>handle, nnz, <const double *>y, <double *>xVal,
++        <const int *>xInd, <IndexBase>idxBase)
++    check_status(status)
++
++
++########################################
++# cuSPARSE Level2 Function
++
++cpdef scsrmv(
++        size_t handle, int transA, int m, int n, int nnz,
++        size_t alpha, size_t descrA, size_t csrSortedValA,
++        size_t csrSortedRowPtrA, size_t csrSortedColIndA,
++        size_t x, size_t beta, size_t y):
++    status = cusparseScsrmv(
++        <Handle>handle, <Operation>transA, m, n, nnz,
++        <const float *>alpha, <MatDescr>descrA, <const float *>csrSortedValA,
++        <const int *>csrSortedRowPtrA, <const int *>csrSortedColIndA,
++        <const float *>x, <const float *>beta, <float *>y)
++    check_status(status)
++
++cpdef dcsrmv(
++        size_t handle, int transA, int m, int n, int nnz,
++        size_t alpha, size_t descrA, size_t csrSortedValA,
++        size_t csrSortedRowPtrA, size_t csrSortedColIndA,
++        size_t x, size_t beta, size_t y):
++    status = cusparseDcsrmv(
++        <Handle>handle, <Operation>transA, m, n, nnz,
++        <const double *>alpha, <MatDescr>descrA, <const double *>csrSortedValA,
++        <const int *>csrSortedRowPtrA, <const int *>csrSortedColIndA,
++        <const double *>x, <const double *>beta, <double *>y)
++    check_status(status)
++
++
++########################################
++# cuSPARSE Level3 Function
++
++cpdef scsrmm(
++        size_t handle, int transA, int m, int n, int k, int nnz,
++        size_t alpha, size_t descrA, size_t csrSortedValA,
++        size_t csrSortedRowPtrA, size_t csrSortedColIndA,
++        size_t B, int ldb, size_t beta, size_t C, int ldc):
++    status = cusparseScsrmm(
++        <Handle>handle, <Operation>transA, m, n, k, nnz,
++        <const float *>alpha, <MatDescr>descrA, <const float *>csrSortedValA,
++        <const int *>csrSortedRowPtrA, <const int *>csrSortedColIndA,
++        <const float *>B, ldb, <const float *>beta, <float *>C, ldc)
++    check_status(status)
++
++cpdef dcsrmm(
++        size_t handle, int transA, int m, int n, int k, int nnz,
++        size_t alpha, size_t descrA, size_t csrSortedValA,
++        size_t csrSortedRowPtrA, size_t csrSortedColIndA,
++        size_t B, int ldb, size_t beta, size_t C, int ldc):
++    status = cusparseDcsrmm(
++        <Handle>handle, <Operation>transA, m, n, k, nnz,
++        <const double *>alpha, <MatDescr>descrA, <const double *>csrSortedValA,
++        <const int *>csrSortedRowPtrA, <const int *>csrSortedColIndA,
++        <const double *>B, ldb, <const double *>beta, <double *>C, ldc)
++    check_status(status)
++
++cpdef scsrmm2(
++        size_t handle, int transA, int transB, int m, int n, int k, int nnz,
++        size_t alpha, size_t descrA, size_t csrValA,
++        size_t csrRowPtrA, size_t csrColIndA,
++        size_t B, int ldb, size_t beta, size_t C, int ldc):
++    status = cusparseScsrmm2(
++        <Handle>handle, <Operation>transA, <Operation>transB, m, n, k, nnz,
++        <const float *>alpha, <MatDescr>descrA, <const float *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA,
++        <const float *>B, ldb, <const float *>beta, <float *>C, ldc)
++    check_status(status)
++
++cpdef dcsrmm2(
++        size_t handle, int transA, int transB, int m, int n, int k, int nnz,
++        size_t alpha, size_t descrA, size_t csrValA,
++        size_t csrRowPtrA, size_t csrColIndA,
++        size_t B, int ldb, size_t beta, size_t C, int ldc):
++    status = cusparseDcsrmm2(
++        <Handle>handle, <Operation>transA, <Operation>transB, m, n, k, nnz,
++        <const double *>alpha, <MatDescr>descrA, <const double *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA,
++        <const double *>B, ldb, <const double *>beta, <double *>C, ldc)
++    check_status(status)
++
++
++########################################
++# cuSPARSE Extra Function
++
++cpdef xcsrgeamNnz(
++        size_t handle, int m, int n, size_t descrA, int nnzA,
++        size_t csrRowPtrA, size_t csrColIndA, size_t descrB,
++        int nnzB, size_t csrRowPtrB, size_t csrColIndB,
++        size_t descrC, size_t csrRowPtrC, size_t nnzTotalDevHostPtr):
++    status = cusparseXcsrgeamNnz(
++        <Handle>handle, m, n, <const MatDescr>descrA, nnzA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA,
++        <const MatDescr>descrB, nnzB, <const int *>csrRowPtrB,
++        <const int *>csrColIndB, <const MatDescr>descrC, <int *>csrRowPtrC,
++        <int *>nnzTotalDevHostPtr)
++    check_status(status)
++
++cpdef scsrgeam(
++        size_t handle, int m, int n, size_t alpha, size_t descrA,
++        int nnzA, size_t csrValA, size_t csrRowPtrA,
++        size_t csrColIndA, size_t beta, size_t descrB,
++        int nnzB, size_t csrValB, size_t csrRowPtrB,
++        size_t csrColIndB, size_t descrC, size_t csrValC,
++        size_t csrRowPtrC, size_t csrColIndC):
++    status = cusparseScsrgeam(
++        <Handle>handle, m, n, <const float *>alpha,
++        <const MatDescr>descrA, nnzA, <const float *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA, <const float *>beta,
++        <const MatDescr>descrB, nnzB, <const float *>csrValB,
++        <const int *>csrRowPtrB, <const int *>csrColIndB,
++        <const MatDescr>descrC, <float *>csrValC, <int *>csrRowPtrC,
++        <int *>csrColIndC)
++    check_status(status)
++
++
++cpdef dcsrgeam(
++        size_t handle, int m, int n, size_t alpha, size_t descrA,
++        int nnzA, size_t csrValA, size_t csrRowPtrA,
++        size_t csrColIndA, size_t beta, size_t descrB,
++        int nnzB, size_t csrValB, size_t csrRowPtrB,
++        size_t csrColIndB, size_t descrC, size_t csrValC,
++        size_t csrRowPtrC, size_t csrColIndC):
++    status = cusparseDcsrgeam(
++        <Handle>handle, m, n, <const double *>alpha,
++        <const MatDescr>descrA, nnzA, <const double *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA, <const double *>beta,
++        <const MatDescr>descrB, nnzB, <const double *>csrValB,
++        <const int *>csrRowPtrB, <const int *>csrColIndB,
++        <const MatDescr>descrC, <double *>csrValC, <int *>csrRowPtrC,
++        <int *>csrColIndC)
++    check_status(status)
++
++
++cpdef xcsrgemmNnz(
++        size_t handle, int transA, int transB, int m, int n, int k,
++        size_t descrA, int nnzA, size_t csrRowPtrA,
++        size_t csrColIndA, size_t descrB, int nnzB,
++        size_t csrRowPtrB, size_t csrColIndB,
++        size_t descrC, size_t csrRowPtrC, size_t nnzTotalDevHostPtr):
++    status = cusparseXcsrgemmNnz(
++        <Handle>handle, <Operation>transA, <Operation>transB, m, n, k,
++        <const MatDescr>descrA, nnzA, <const int *>csrRowPtrA,
++        <const int *>csrColIndA, <const MatDescr>descrB, nnzB,
++        <const int *>csrRowPtrB, <const int *>csrColIndB,
++        <const MatDescr>descrC, <int *>csrRowPtrC, <int *>nnzTotalDevHostPtr)
++    check_status(status)
++
++
++cpdef scsrgemm(
++        size_t handle, int transA, int transB, int m, int n, int k,
++        size_t descrA, const int nnzA, size_t csrValA,
++        size_t csrRowPtrA, size_t csrColIndA, size_t descrB,
++        const int nnzB, size_t csrValB, size_t csrRowPtrB,
++        size_t csrColIndB, size_t descrC, size_t csrValC,
++        size_t csrRowPtrC, size_t csrColIndC):
++    status = cusparseScsrgemm(
++        <Handle>handle, <Operation>transA, <Operation>transB, m, n, k,
++        <const MatDescr>descrA, nnzA, <const float *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA,
++        <const MatDescr>descrB, nnzB, <const float *>csrValB,
++        <const int *>csrRowPtrB, <const int *>csrColIndB,
++        <const MatDescr>descrC, <float *>csrValC,
++        <const int *>csrRowPtrC, <int *>csrColIndC)
++    check_status(status)
++
++
++cpdef dcsrgemm(
++        size_t handle, int transA, int transB, int m, int n, int k,
++        size_t descrA, const int nnzA, size_t csrValA,
++        size_t csrRowPtrA, size_t csrColIndA, size_t descrB,
++        const int nnzB, size_t csrValB, size_t csrRowPtrB,
++        size_t csrColIndB, size_t descrC, size_t csrValC,
++        size_t csrRowPtrC, size_t csrColIndC):
++    status = cusparseDcsrgemm(
++        <Handle>handle, <Operation>transA, <Operation>transB, m, n, k,
++        <const MatDescr>descrA, nnzA, <const double *>csrValA,
++        <const int *>csrRowPtrA, <const int *>csrColIndA,
++        <const MatDescr>descrB, nnzB, <const double *>csrValB,
++        <const int *>csrRowPtrB, <const int *>csrColIndB,
++        <const MatDescr>descrC, <double *>csrValC,
++        <const int *>csrRowPtrC, <int *>csrColIndC)
++    check_status(status)
++
++
++########################################
++# cuSPARSE Format Convrsion
++
++cpdef xcoo2csr(
++        size_t handle, size_t cooRowInd, int nnz, int m, size_t csrRowPtr,
++        int idxBase):
++    status = cusparseXcoo2csr(
++        <Handle>handle, <const int *>cooRowInd, nnz, m, <int *>csrRowPtr,
++        <IndexBase>idxBase)
++    check_status(status)
++
++
++cpdef xcsr2coo(
++        size_t handle, size_t csrRowPtr, int nnz, int m, size_t cooRowInd,
++        int idxBase):
++    status = cusparseXcsr2coo(
++        <Handle>handle, <const int *>csrRowPtr, nnz, m, <int *>cooRowInd,
++        <IndexBase>idxBase)
++    check_status(status)
++
++
++cpdef scsr2csc(
++        size_t handle, int m, int n, int nnz, size_t csrVal,
++        size_t csrRowPtr, size_t csrColInd, size_t cscVal,
++        size_t cscRowInd, size_t cscColPtr, int copyValues, int idxBase):
++    status = cusparseScsr2csc(
++        <Handle>handle, m, n, nnz, <const float *>csrVal,
++        <const int *>csrRowPtr, <const int *>csrColInd, <float *>cscVal,
++        <int *>cscRowInd, <int *>cscColPtr, <Action>copyValues,
++        <IndexBase>idxBase)
++    check_status(status)
++
++
++cpdef dcsr2csc(
++        size_t handle, int m, int n, int nnz, size_t csrVal,
++        size_t csrRowPtr, size_t csrColInd, size_t cscVal,
++        size_t cscRowInd, size_t cscColPtr, int copyValues, int idxBase):
++    status = cusparseDcsr2csc(
++        <Handle>handle, m, n, nnz, <const double *>csrVal,
++        <const int *>csrRowPtr, <const int *>csrColInd, <double *>cscVal,
++        <int *>cscRowInd, <int *>cscColPtr, <Action>copyValues,
++        <IndexBase>idxBase)
++    check_status(status)
++
++
++cpdef scsr2dense(
++        size_t handle, int m, int n, size_t descrA,
++        size_t csrSortedValA, size_t csrSortedRowPtrA,
++        size_t csrSortedColIndA, size_t A, int lda):
++    status = cusparseScsr2dense(
++        <Handle>handle, m, n, <MatDescr>descrA,
++        <const float *>csrSortedValA, <const int *>csrSortedRowPtrA,
++        <const int *>csrSortedColIndA, <float *>A, lda)
++    check_status(status)
++
++
++cpdef dcsr2dense(
++        size_t handle, int m, int n, size_t descrA,
++        size_t csrSortedValA, size_t csrSortedRowPtrA,
++        size_t csrSortedColIndA, size_t A, int lda):
++    status = cusparseDcsr2dense(
++        <Handle>handle, m, n, <MatDescr>descrA,
++        <const double *>csrSortedValA, <const int *>csrSortedRowPtrA,
++        <const int *>csrSortedColIndA, <double *>A, lda)
++    check_status(status)
++
++
++cpdef createIdentityPermutation(
++        size_t handle, int n, size_t p):
++    status = cusparseCreateIdentityPermutation(
++        <Handle>handle, n, <int *>p)
++    check_status(status)
++
++
++cpdef size_t xcoosort_bufferSizeExt(
++        size_t handle, int m, int n, int nnz, size_t cooRows,
++        size_t cooCols):
++    cdef size_t bufferSizeInBytes
++    status = cusparseXcoosort_bufferSizeExt(
++        <Handle>handle, m, n, nnz, <const int *>cooRows,
++        <const int *>cooCols, &bufferSizeInBytes)
++    check_status(status)
++    return bufferSizeInBytes
++
++
++cpdef xcoosortByRow(
++        size_t handle, int m, int n, int nnz, size_t cooRows, size_t cooCols,
++        size_t P, size_t pBuffer):
++    status = cusparseXcoosortByRow(
++        <Handle>handle, m, n, nnz, <int *>cooRows, <int *>cooCols,
++        <int *>P, <void *>pBuffer)
++    check_status(status)
++
++
++cpdef size_t xcsrsort_bufferSizeExt(
++        size_t handle, int m, int n, int nnz, size_t csrRowPtr,
++        size_t csrColInd):
++    cdef size_t bufferSizeInBytes
++    status = cusparseXcsrsort_bufferSizeExt(
++        <Handle>handle, m, n, nnz, <const int *>csrRowPtr,
++        <const int *>csrColInd, &bufferSizeInBytes)
++    check_status(status)
++    return bufferSizeInBytes
++
++
++cpdef xcsrsort(
++        size_t handle, int m, int n, int nnz, size_t descrA,
++        size_t csrRowPtr, size_t csrColInd, size_t P, size_t pBuffer):
++    status = cusparseXcsrsort(
++        <Handle>handle, m, n, nnz, <const MatDescr>descrA,
++        <const int *>csrRowPtr, <int *>csrColInd, <int *>P, <void *>pBuffer)
++    check_status(status)
++
++
++cpdef size_t xcscsort_bufferSizeExt(
++        size_t handle, int m, int n, int nnz, size_t cscColPtr,
++        size_t cscRowInd):
++    cdef size_t bufferSizeInBytes
++    status = cusparseXcscsort_bufferSizeExt(
++        <Handle>handle, m, n, nnz, <const int *>cscColPtr,
++        <const int *>cscRowInd, &bufferSizeInBytes)
++    check_status(status)
++    return bufferSizeInBytes
++
++
++cpdef xcscsort(
++        size_t handle, int m, int n, int nnz, size_t descrA,
++        size_t cscColPtr, size_t cscRowInd, size_t P, size_t pBuffer):
++    status = cusparseXcscsort(
++        <Handle>handle, m, n, nnz, <const MatDescr>descrA,
++        <const int *>cscColPtr, <int *>cscRowInd, <int *>P, <void *>pBuffer)
++    check_status(status)
+diff --git cupy/cuda/memory.pyx cupy/cuda/memory.pyx
+index d27cac48..49efdf00 100644
+--- cupy/cuda/memory.pyx
++++ cupy/cuda/memory.pyx
+@@ -384,7 +384,7 @@ cdef class SingleDeviceMemoryPool:
+         free.append(mem)
+ 
+     cpdef free_all_blocks(self):
+-        self._free = collections.defaultdict(list)
++        self._free.clear()
+ 
+     cpdef free_all_free(self):
+         warnings.warn(
+diff --git cupy/cuda/pinned_memory.pyx cupy/cuda/pinned_memory.pyx
+index 788dee85..3b72b9c1 100644
+--- cupy/cuda/pinned_memory.pyx
++++ cupy/cuda/pinned_memory.pyx
+@@ -259,7 +259,7 @@ cdef class PinnedMemoryPool:
+ 
+     cpdef free_all_blocks(self):
+         """Release free all blocks."""
+-        self._free = collections.defaultdict(list)
++        self._free.clear()
+ 
+     cpdef n_free_blocks(self):
+         """Count the total number of free blocks.
+diff --git cupy/math/sumprod.py cupy/math/sumprod.py
+index 880a3f4b..37a6350a 100644
+--- cupy/math/sumprod.py
++++ cupy/math/sumprod.py
+@@ -94,6 +94,21 @@ def _cumsum_batch(out):
+ 
+ 
+ def cumsum(a, axis=None, dtype=None, out=None):
++    """Returns the cumlative sum of an array along a given axis.
++
++    Args:
++        a (cupy.ndarray): Input array.
++        axis (int): Axis along which the cumlative sum is taken. If it is not
++        specified, the input is flattened.
++        dtype: Data type specifier.
++        out (cupy.ndarray): Output array.
++
++    Returns:
++        cupy.ndarray: The result array.
++
++    .. seealso:: :func:`numpy.cumsum`
++
++    """
+     if out is None:
+         if dtype is None:
+             kind = a.dtype.kind
+diff --git cupy/random/generator.py cupy/random/generator.py
+index a8b79eb8..1b058da5 100644
+--- cupy/random/generator.py
++++ cupy/random/generator.py
+@@ -341,7 +341,6 @@ def get_random_state():
+         device.
+ 
+     """
+-    global _random_states
+     dev = cuda.Device()
+     rs = _random_states.get(dev.id, None)
+     if rs is None:
+@@ -349,7 +348,7 @@ def get_random_state():
+         if seed is None:
+             seed = os.getenv('CHAINER_SEED')
+         rs = RandomState(seed)
+-        _random_states[dev.id] = rs
++        rs = _random_states.setdefault(dev.id, rs)
+     return rs
+ 
+ 
+diff --git cupy_setup_build.py cupy_setup_build.py
+index 0a05b8d7..01f63928 100644
+--- cupy_setup_build.py
++++ cupy_setup_build.py
+@@ -27,6 +27,7 @@ MODULES = [
+             'cupy.core.internal',
+             'cupy.cuda.cublas',
+             'cupy.cuda.curand',
++            'cupy.cuda.cusparse',
+             'cupy.cuda.device',
+             'cupy.cuda.driver',
+             'cupy.cuda.memory',
+@@ -43,6 +44,7 @@ MODULES = [
+             'cuda_profiler_api.h',
+             'cuda_runtime.h',
+             'curand.h',
++            'cusparse.h',
+             'nvToolsExt.h',
+         ],
+         'libraries': [
+@@ -50,6 +52,7 @@ MODULES = [
+             'cuda',
+             'cudart',
+             'curand',
++            'cusparse',
+             'nvToolsExt',
+         ],
+         'check_method': build.check_cuda_version,
+@@ -271,6 +274,13 @@ def make_extensions(options, compiler, use_cython):
+             elif compiler.compiler_type == 'msvc':
+                 args.append('/openmp')
+ 
++        if not no_cuda and module['name'] == 'thrust':
++            if build.get_nvcc_path() is None:
++                utils.print_warning(
++                    'Cannot find nvcc in PATH.',
++                    'Skip installing thrust support.')
++                continue
++
+         for f in module['file']:
+             name = module_extension_name(f)
+             sources = module_extension_sources(f, use_cython, no_cuda)
+diff --git docs/source/reference/math.rst docs/source/reference/math.rst
+index 32114b44..e4b17c4f 100644
+--- docs/source/reference/math.rst
++++ docs/source/reference/math.rst
+@@ -43,6 +43,7 @@ Sums and products
+ 
+ .. autofunction:: cupy.sum
+ .. autofunction:: cupy.prod
++.. autofunction:: cupy.cumsum
+ 
+ 
+ Exponential and logarithm functions
+diff --git docs/source/tutorial/basic.rst docs/source/tutorial/basic.rst
+index 3dba22cf..affa2a8a 100644
+--- docs/source/tutorial/basic.rst
++++ docs/source/tutorial/basic.rst
+@@ -16,6 +16,7 @@ CuPy is a GPU array backend that implements a subset of NumPy interface.
+ In the following code, cp is an abbreviation of cupy, as np is numpy as is customarily done:
+ 
+ .. doctest::
++
+    >>> import numpy as np
+    >>> import cupy as cp
+ 
+diff --git examples/kmeans/kmeans.py examples/kmeans/kmeans.py
+index 48e58b4b..3dfc3ac1 100644
+--- examples/kmeans/kmeans.py
++++ examples/kmeans/kmeans.py
+@@ -87,7 +87,7 @@ def draw(X, n_clusters, centers, pred, output):
+         labels = X[pred == i]
+         if xp == cupy:
+             labels = labels.get()
+-        plt.scatter(labels[:, 0], labels[:, 1], color=np.random.rand(3, 1))
++        plt.scatter(labels[:, 0], labels[:, 1], c=np.random.rand(3))
+     if xp == cupy:
+         centers = centers.get()
+     plt.scatter(centers[:, 0], centers[:, 1], s=120, marker='s',
+diff --git install/build.py install/build.py
+index 518852af..1752f5e8 100644
+--- install/build.py
++++ install/build.py
+@@ -15,23 +15,23 @@ maximum_cudnn_version = 6999
+ # provided functions are insufficient to implement cupy.linalg
+ minimum_cusolver_cuda_version = 8000
+ 
+-get_nvcc_path_warned = False
++_cuda_path = 'NOT_INITIALIZED'
+ 
+ 
+-def get_nvcc_path():
+-    global get_nvcc_path_warned
+-    nvcc_path = utils.search_on_path(('nvcc', 'nvcc.exe'))
+-    if nvcc_path is None and not get_nvcc_path_warned:
+-        utils.print_warning('nvcc not in path.',
+-                            'Please set path to nvcc.')
+-        get_nvcc_path_warned = True
+-    return nvcc_path
++def get_cuda_path():
++    global _cuda_path
+ 
++    # Use a magic word to represent the cache not filled because None is a
++    # valid return value.
++    if _cuda_path is not 'NOT_INITIALIZED':
++        return _cuda_path
+ 
+-def get_compiler_setting():
+-    nvcc_path = get_nvcc_path()
++    nvcc_path = utils.search_on_path(('nvcc', 'nvcc.exe'))
+     cuda_path_default = None
+-    if nvcc_path is not None:
++    if nvcc_path is None:
++        utils.print_warning('nvcc not in path.',
++                            'Please set path to nvcc.')
++    else:
+         cuda_path_default = os.path.normpath(
+             os.path.join(os.path.dirname(nvcc_path), '..'))
+ 
+@@ -42,11 +42,37 @@ def get_compiler_setting():
+             'nvcc path: %s' % cuda_path_default,
+             'CUDA_PATH: %s' % cuda_path)
+ 
+-    if not os.path.exists(cuda_path):
+-        cuda_path = cuda_path_default
++    if os.path.exists(cuda_path):
++        _cuda_path = cuda_path
++    elif cuda_path_default is not None:
++        _cuda_path = cuda_path_default
++    elif os.path.exists('/usr/local/cuda'):
++        _cuda_path = '/usr/local/cuda'
++    else:
++        _cuda_path = None
++
++    return _cuda_path
+ 
+-    if not cuda_path and os.path.exists('/usr/local/cuda'):
+-        cuda_path = '/usr/local/cuda'
++
++def get_nvcc_path():
++    cuda_path = get_cuda_path()
++    if cuda_path is None:
++        return None
++
++    if sys.platform == 'win32':
++        nvcc_bin = 'bin/nvcc.exe'
++    else:
++        nvcc_bin = 'bin/nvcc'
++
++    nvcc_path = os.path.join(cuda_path, nvcc_bin)
++    if os.path.exists(nvcc_path):
++        return nvcc_path
++    else:
++        return None
++
++
++def get_compiler_setting():
++    cuda_path = get_cuda_path()
+ 
+     include_dirs = []
+     library_dirs = []
+diff --git tests/cupy_tests/random_tests/test_generator.py tests/cupy_tests/random_tests/test_generator.py
+index 0233bb15..ec070950 100644
+--- tests/cupy_tests/random_tests/test_generator.py
++++ tests/cupy_tests/random_tests/test_generator.py
+@@ -1,6 +1,7 @@
+ import mock
+ import operator
+ import os
++import threading
+ import unittest
+ 
+ import numpy
+@@ -332,11 +333,11 @@ class TestChoiceChi(unittest.TestCase):
+ @testing.gpu
+ class TestChoiceMultinomial(unittest.TestCase):
+ 
+-    @condition.retry(5)
++    @condition.retry(10)
+     @testing.for_float_dtypes()
+-    @testing.numpy_cupy_allclose(atol=0.01)
++    @testing.numpy_cupy_allclose(atol=0.02)
+     def test_choice_multinomial(self, xp, dtype):
+-        p = xp.array([0.2, 0.3, 0.5], dtype)
++        p = xp.array([0.5, 0.25, 0.125, 0.125], dtype)
+         trial = 10000
+         x = xp.random.choice(len(p), trial, p=p)
+         y = xp.bincount(x).astype('f') / trial
+@@ -398,6 +399,35 @@ class TestGetRandomState(unittest.TestCase):
+ 
+ 
+ @testing.gpu
++class TestGetRandomStateThreadSafe(unittest.TestCase):
++
++    def setUp(self):
++        cupy.random.reset_states()
++
++    def test_thread_safe(self):
++        seed = 10
++        threads = [
++            threading.Thread(target=lambda: cupy.random.seed(seed)),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++            threading.Thread(target=lambda: cupy.random.get_random_state()),
++        ]
++
++        for t in threads:
++            t.start()
++        for t in threads:
++            t.join()
++
++        actual = cupy.random.uniform()
++        cupy.random.seed(seed)
++        expected = cupy.random.uniform()
++        self.assertEqual(actual, expected)
++
++
++@testing.gpu
+ class TestGetRandomState2(unittest.TestCase):
+ 
+     def setUp(self):

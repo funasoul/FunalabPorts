@@ -1,0 +1,57 @@
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+PortGroup           python 1.0
+PortGroup           github 1.0
+
+github.setup        chainer chainer 2.0.0 v
+name                py-chainer2
+maintainers         hum openmaintainer
+license             MIT
+supported_archs     noarch
+
+description         A flexible framework of neural networks
+long_description    ${description}
+
+homepage            http://chainer.org/
+platforms           darwin
+
+python.versions     27 35 36
+
+if {${name} ne ${subport}} {
+    checksums           rmd160  92cbf23e51d58900436c731595e5132cf32678c2 \
+                        sha256  f5cacc29cd6e831bf496bd61857d5f87fe483e5b27c76866a6f4d94a1562faf3
+
+    depends_lib-append  port:py${python.version}-numpy \
+                        port:py${python.version}-filelock \
+                        port:py${python.version}-six \
+                        port:py${python.version}-cupy
+
+    post-destroot {
+        # install additional documents
+        set docdir ${prefix}/share/doc/${subport}
+        xinstall -d ${destroot}${docdir}
+        xinstall -W ${worksrcpath} \
+            LICENSE README.md \
+            ${destroot}${docdir}
+        # install examples
+        foreach f [glob -directory ${worksrcpath}/examples *] {
+            copy $f ${destroot}${docdir}/examples/[file tail $f]
+        }
+    }
+
+    variant imagedataset description {Support image dataset} {
+        depends_lib-append      port:py${python.version}-Pillow
+    }
+
+    variant hdf5 description {Support HDF5 serialization} {
+        depends_lib-append      port:py${python.version}-h5py
+    }
+
+    variant protobuf description {Caffe model support} {
+        depends_lib-append      port:py${python.version}-protobuf31
+    }
+
+    livecheck.type      none
+}

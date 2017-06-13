@@ -2,13 +2,18 @@
 Local Portfile Repository for FunaLab.
 
 ## What is here
-* python/py-chainer  ... Portfile for chainer-1.19.0
-* python/py-filelock ... Portfile for filelock-2.0.7
+* devel/protobuf31   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
+* python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0
+* python/py-chainer2 ... Portfile for [Chainer](https://chainer.org) v2.0.0
 * python/py-cpplint  ... Portfile for CppLint
-* science/cufflinks  ... Portfile for Cufflinks-2.2.1
-* science/libsbml-devel ... Portfile for libSBML-5.13.0 (supports building SBML Level 3 package extensions and language bindings)
-* science/libsbmlsim ... Portfile for libSBMLSim-1.3.0 (supports building with language bindings)
-* science/samtools0  ... Portfile for samtools-0.1.19 (because [cufflinks requires samtools-0.x](https://github.com/cole-trapnell-lab/cufflinks/issues/14))
+* python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch #91)
+* python/py-filelock ... Portfile for filelock-2.0.7
+* python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
+* python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5
+* science/cufflinks  ... Portfile for [Cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) v2.2.1
+* science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.13.0 (supports building SBML Level 3 package extensions and language bindings)
+* science/libsbmlsim ... Portfile for [libSBMLSim](https://fun.bio.keio.ac.jp/software/libsbmlsim/) v1.3.0 (supports building with language bindings)
+* science/samtools0  ... Portfile for [samtools](http://samtools.sourceforge.net) v0.1.19 (because [cufflinks requires samtools-0.x](https://github.com/cole-trapnell-lab/cufflinks/issues/14))
 
 ## How to use
 ### Use this project as your Local Portfile Repository
@@ -35,31 +40,48 @@ file:///Users/yourname/git/FunalabPorts
 py-chainer @1.1.1 (python)
     A flexible framework of neural networks
 
-py-chainer @1.19.0 (python)         # <== OK!
+py-chainer @1.24.0 (python)         # <== OK!
+    A flexible framework of neural networks
+
+py-chainer2 @2.0.0 (python)         # <== OK!
     A flexible framework of neural networks
 
 py27-chainer @1.1.1 (python)
     A flexible framework of neural networks
 
-py27-chainer @1.19.0 (python)       # <== OK!
+py27-chainer @1.24.0 (python)       # <== OK!
+    A flexible framework of neural networks
+
+py27-chainer2 @2.0.0 (python)       # <== OK!
     A flexible framework of neural networks
 
 py34-chainer @1.1.1 (python)
     A flexible framework of neural networks
 
-py34-chainer @1.19.0 (python)       # <== OK!
+py34-chainer @1.24.0 (python)       # <== OK!
     A flexible framework of neural networks
 
-Found 6 ports.
+py35-chainer2 @2.0.0 (python)       # <== OK!
+    A flexible framework of neural networks
+
+py36-chainer2 @2.0.0 (python)       # <== OK!
+    A flexible framework of neural networks
+
+Found 10 ports.
 ```
 
-### Install py-chainer (1.19.0) by MacPorts
+### Install py-chainer (1.24.0) by MacPorts
 ```sh
 % sudo port install py27-chainer
 ```
 or
 ```sh
 % sudo port upgrade py27-chainer
+```
+
+### Install py-chainer (2.0.0) by MacPorts
+```sh
+% sudo port install py27-chainer2
 ```
 
 ### Install cufflinks (2.2.1) by MacPorts

@@ -48,5 +48,9 @@ if {${name} ne ${subport}} {
         depends_lib-append      port:py${python.version}-h5py
     }
 
+    variant protobuf description {Caffe model support} {
+        depends_lib-append      port:py${python.version}-protobuf31
+    }
+
     livecheck.type      none
 }

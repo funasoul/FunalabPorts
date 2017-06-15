@@ -6,7 +6,7 @@ Local Portfile Repository for FunaLab.
 * python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0
 * python/py-chainer2 ... Portfile for [Chainer](https://chainer.org) v2.0.0
 * python/py-cpplint  ... Portfile for CppLint
-* python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch #91)
+* python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch [#91](https://github.com/cupy/cupy/pull/91))
 * python/py-filelock ... Portfile for filelock-2.0.7
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5

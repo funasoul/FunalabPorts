@@ -12,7 +12,7 @@ supported_archs     noarch
 
 description         A flexible framework of neural networks
 long_description    ${description}
-conflicts           py${python.version}-cupy
+conflicts           py${python.version}-cupy py${python.version}-chainer2
 
 homepage            http://chainer.org/
 platforms           darwin

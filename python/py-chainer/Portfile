@@ -12,6 +12,7 @@ supported_archs     noarch
 
 description         A flexible framework of neural networks
 long_description    ${description}
+conflicts           py${python.version}-cupy
 
 homepage            http://chainer.org/
 platforms           darwin
@@ -48,7 +49,7 @@ if {${name} ne ${subport}} {
     }
 
     variant protobuf description {Caffe model support} {
-        depends_lib-append      port:py${python.version}-protobuf31
+        depends_lib-append      port:py${python.version}-protobuf3-devel
     }
 
     livecheck.type      none

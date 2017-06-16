@@ -1,0 +1,41 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+
+name                    py-backports-weakref
+version                 1.0rc1
+categories-append       devel
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             Backport of new features in Python's weakref module.
+long_description        ${description}
+license                 PSF
+homepage                https://github.com/pjdelport/backports.weakref
+master_sites            pypi:b/backports.weakref
+
+distname                backports.weakref-${version}
+
+checksums               rmd160  9cc1dd92ac603018cccc80160750b2e4c6e737b4 \
+                        sha256  8813bf712a66b3d8b85dc289e1104ed220f1878cf981e2fe756dfaabe9a82892
+
+python.versions         27 34 35
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-setuptools_scm
+    # Fix conflict with other backports
+    # Should we add "namespace_packages = ['backports']" to setup.py?
+    post-destroot {
+        foreach f {__init__.py __init__.pyc __init__.pyo __pycache__} {
+            set fp "${destroot}${python.pkgd}/backports/$f"
+            if {[file exists ${fp}]} {
+                file delete -force ${fp}
+            }
+        }
+    }
+
+    livecheck.type none
+}

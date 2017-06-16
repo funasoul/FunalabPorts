@@ -7,7 +7,7 @@ PortGroup           github 1.0
 
 github.setup        chainer chainer 2.0.0 v
 name                py-chainer2
-maintainers         hum openmaintainer
+maintainers         nomaintainer
 license             MIT
 supported_archs     noarch
 

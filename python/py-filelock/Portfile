@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-filelock
-version                 2.0.7
+version                 2.0.10
 maintainers             nomaintainer
 platforms               darwin
 supported_archs         noarch
@@ -17,8 +17,8 @@ homepage                http://pypi.python.org/pypi/filelock/
 distname                filelock-${version}
 master_sites            pypi:f/filelock/
 
-checksums               rmd160  138a8b27c32e19eb71058244b14da649f71d43ad \
-                        sha256  bdff3edefb9d1df7d40ce9b653adfafd4ba7e2105bc8de78c65aa03641f8ee16
+checksums               rmd160  10abf82abf051737e01436b2cc882bd0cd43a82e \
+                        sha256  c73bf706d8a0c5722de0b745495fed9cda0e46c0eabb44eb18ee3f00520fa85f
 
 python.versions         27 34
 

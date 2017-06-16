@@ -2,13 +2,17 @@
 Local Portfile Repository for FunaLab.
 
 ## What is here
-* devel/protobuf31   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
+* devel/protobuf31-cpp   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
+* devel/protobuf3-cpp-devel   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
+* python/py-backports-weakref  ... Portfile for [backports.weakref](https://github.com/pjdelport/backports.weakref) v1.0rc1
 * python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0
 * python/py-chainer2 ... Portfile for [Chainer](https://chainer.org) v2.0.0
 * python/py-cpplint  ... Portfile for [CppLint](https://pypi.python.org/pypi/cpplint) v1.3.0
 * python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch [#91](https://github.com/cupy/cupy/pull/91))
-* python/py-filelock ... Portfile for [filelock](https://pypi.python.org/pypi/filelock) v2.0.7
+* python/py-filelock ... Portfile for [filelock](https://pypi.python.org/pypi/filelock) v2.0.10
+* python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
+* python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5
 * science/cufflinks  ... Portfile for [Cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) v2.2.1
 * science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.13.0 (supports building SBML Level 3 package extensions and language bindings)

@@ -6,7 +6,7 @@ PortGroup               github 1.0
 
 github.setup            cupy cupy 1.0.0 v
 
-name                    py${python.version}-chainer
+name                    py-cupy
 maintainers             nomaintainer
 platforms               darwin
 supported_archs         noarch
@@ -16,7 +16,7 @@ long_description        CuPy is an implementation of NumPy-compatible multi-dime
                         CuPy consists of the core multi-dimensional array class, cupy.ndarray, and many\
                         functions on it. It supports a subset of numpy.ndarray interface that is enough\
                         for Chainer.
-conflicts               py-chainer
+conflicts               py${python.version}-chainer
 license                 MIT
 homepage                https://github.com/cupy/cupy
 

@@ -5,10 +5,12 @@ Local Portfile Repository for FunaLab.
 * devel/protobuf31-cpp   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * devel/protobuf3-cpp-devel   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
 * python/py-backports-weakref  ... Portfile for [backports.weakref](https://github.com/pjdelport/backports.weakref) v1.0rc1
+* python/py-binstruct  ... Portfile for [binstruct](https://pypi.python.org/pypi/binstruct) v1.0.1
 * python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0
 * python/py-chainer2 ... Portfile for [Chainer](https://chainer.org) v2.0.0
 * python/py-cpplint  ... Portfile for [CppLint](https://pypi.python.org/pypi/cpplint) v1.3.0
 * python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch [#91](https://github.com/cupy/cupy/pull/91))
+* python/py-evic     ... Portfile for [Evic](https://github.com/Ban3/python-evic) 176cf0b
 * python/py-filelock ... Portfile for [filelock](https://pypi.python.org/pypi/filelock) v2.0.10
 * python/py-hidapi   ... Portfile for [cython-hidapi](https://github.com/gbishop/cython-hidapi) 3530c94
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0

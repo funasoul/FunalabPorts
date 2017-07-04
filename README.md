@@ -10,6 +10,7 @@ Local Portfile Repository for FunaLab.
 * python/py-cpplint  ... Portfile for [CppLint](https://pypi.python.org/pypi/cpplint) v1.3.0
 * python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch [#91](https://github.com/cupy/cupy/pull/91))
 * python/py-filelock ... Portfile for [filelock](https://pypi.python.org/pypi/filelock) v2.0.10
+* python/py-hidapi   ... Portfile for [cython-hidapi](https://github.com/gbishop/cython-hidapi) 3530c94
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0

@@ -1,0 +1,32 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+
+name                    py-binstruct
+version                 1.0.1
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             Library for read/write access of binary data via structures
+long_description        The binstruct library allows you to access binary data using a predefined structure. The binary data can be provided in any form that allows an indexed access to single bytes. This could for example be an mmaped file. The data structure itself is defined in way similar to Django database table definitions by declaring a new class with its fields.
+license                 GPL
+homepage                https://pypi.python.org/pypi/binstruct
+
+distname                binstruct-${version}
+use_zip                 yes
+master_sites            pypi:b/binstruct/
+
+checksums               rmd160  079eb2675c52103c884d99822788e91a926863e9 \
+                        sha256  6238b637c18e5889a1977d0c9c72b14cc3ca56b4ab7f0e9d4c40cad5bfbdd056
+python.versions         27 32 33 34
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools
+    livecheck.type  none
+} else {
+    livecheck.type  regex
+    livecheck.url   https://pypi.python.org/pypi/binstruct/
+    livecheck.regex     binstruct (\\d(\\.\\d+)*)
+}

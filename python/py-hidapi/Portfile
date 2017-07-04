@@ -16,6 +16,7 @@ description             A cython interface to the hidapi from https://github.com
 long_description        A cython interface to the hidapi from https://github.com/signal11/hidapi with the C modification for windows from http://code.google.com/p/picusb/downloads/detail?name=hidapi_git_mingw_7e93a4e068825d227807.zip&can=2&q= so I could build it with mingw on windows.
 license                 BSD
 homepage                https://github.com/gbishop/cython-hidapi
+patchfiles              patch-setup.py.diff
 
 checksums               rmd160  efc052caf303388a0e8f76c3808b1ce15423454b \
                         sha256  6594dbc1a20a21c881a1c687b74daa9db71d72967fec80a2221005a874adeb69
@@ -24,10 +25,5 @@ python.versions         27 34 35 36
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \
                             port:py${python.version}-cython
-    
-    pre-build {
-        file rename ${worksrcpath}/setup.py ${worksrcpath}/setup.py.dist
-        file rename ${worksrcpath}/setup-mac.py ${worksrcpath}/setup.py
-    }
 }
 

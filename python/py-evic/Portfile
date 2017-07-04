@@ -1,0 +1,31 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+PortGroup               github 1.0
+
+github.setup            Ban3 python-evic 176cf0b076db331cf79dcab4232abd1158b183fa
+version                 20161101
+
+name                    py-evic
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             A USB programmer for devices based on the Joyetech Evic VTC Mini.
+long_description        A USB programmer for devices based on the Joyetech Evic VTC Mini.
+license                 GPL
+homepage                https://github.com/Ban3/python-evic
+
+checksums              rmd160  f6859977b543c069ab00101f80660d4792ba8f14 \
+                       sha256  5c8daef8b4dbdffdda15783d80bb1d90f90fcf8fc49a408b43a33943d5b363c9
+python.versions         27 33 34 35
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-hidapi \
+                            port:py${python.version}-binstruct \
+                            port:py${python.version}-bitarray \
+                            port:py${python.version}-click \
+                            port:py${python.version}-Pillow
+}

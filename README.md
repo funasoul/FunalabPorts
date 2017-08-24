@@ -16,6 +16,7 @@ Local Portfile Repository for FunaLab.
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
+* python/py-sigopt   ... Portfile for [SigOpt Python API](https://github.com/sigopt/sigopt-python) v2.10.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5
 * science/cufflinks  ... Portfile for [Cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) v2.2.1
 * science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.13.0 (supports building SBML Level 3 package extensions and language bindings)

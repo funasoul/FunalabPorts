@@ -1,0 +1,11 @@
+--- setup.py.orig	2017-06-06 07:40:53.000000000 +0900
++++ setup.py	2017-08-24 16:51:22.000000000 +0900
+@@ -11,7 +11,7 @@
+   author='SigOpt',
+   author_email='support@sigopt.com',
+   url='https://sigopt.com/',
+-  packages=['sigopt', 'sigopt.examples'],
++  packages=['sigopt', "sigopt.vendored", 'sigopt.examples'],
+   install_requires=install_requires,
+   classifiers=[
+     "Development Status :: 5 - Production/Stable",

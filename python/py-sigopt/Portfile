@@ -16,6 +16,7 @@ homepage                https://pypi.python.org/pypi/sigopt/
 
 distname                sigopt-${version}
 master_sites            pypi:s/sigopt/
+patchfiles              patch-setup.py.diff
 
 checksums               rmd160  ad9e46d7f70ca2afd9de276d5c24b8842774ae2f \
                         sha256  1c23fdb32e4d3ab6707979eceb46b395ff853498f48ef47f344ca3bb87d89a5d

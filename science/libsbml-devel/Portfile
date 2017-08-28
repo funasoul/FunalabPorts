@@ -7,7 +7,7 @@ PortGroup           cmake 1.0
 cmake.out_of_source yes
 
 name                libsbml-devel
-version             5.13.0
+version             5.15.0
 categories          science
 platforms           darwin
 maintainers         nomaintainer
@@ -27,8 +27,8 @@ master_sites        sourceforge:project/sbml/libsbml/${version}/experimental/sou
 
 distname            libSBML-${version}-Source
 
-checksums           rmd160  950b2412d17ad1fecf829a6ff597987845580293 \
-                    sha256  712e85aba6d6db8b7b7b536a0ba14997482318bed24d89db12221283efb9d1ee
+checksums           rmd160  40866d564fd7c9064ae40724538042e42d29ed0b \
+                    sha256  31d02eb44eda1d8a351227e026dfd5e25b2800c52db47f2329acec70b166e083
 
 depends_lib-append  port:bzip2 \
                     port:libxml2 \

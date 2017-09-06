@@ -1,0 +1,37 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+
+name                    py-pydstool
+version                 0.90.2
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             Python dynamical systems simulation and modeling
+long_description        ${description}
+license                 BSD
+homepage                https://pypi.python.org/pypi/PyDSTool
+
+distname                PyDSTool-${version}
+master_sites            pypi:p/pyDSTool/
+
+checksums               rmd160  6a29de82bf855f92646880329d264e247ec6f676 \
+                        sha256  6e0cbceab8088ee8cbd0839202cdbaeebbe4ab2e6d1a0d0053c7de30268587c1
+
+python.versions         27 33 34 35 36
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-six \
+                            port:py${python.version}-scipy \
+                            port:py${python.version}-numpy \
+                            port:py${python.version}-matplotlib \
+                            port:py${python.version}-ipython
+    livecheck.type  none
+} else {
+    livecheck.type  regex
+    livecheck.url   https://pypi.python.org/pypi/PyDSTool/
+    livecheck.regex     PyDSTool (\\d(\\.\\d+)*)
+}

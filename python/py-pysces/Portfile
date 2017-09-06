@@ -1,0 +1,52 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+PortGroup               compilers 1.0
+
+name                    py-pysces
+version                 0.9.5
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             The Python Simulator for Cellular Systems - simulation and analysis tools for modelling biological systems
+long_description        ${description}
+license                 BSD
+homepage                http://pysces.sourceforge.net
+
+distname                pysces-${version}
+master_sites            pypi:p/pySCeS/
+
+checksums               rmd160  0b9bdc114ba72345898e25620dbdd570d66a0d27 \
+                        sha256  7d439258d9409b41d722407e2e51b0c28810a573803a816c416c0197b5a21882
+
+python.versions         25 26 27
+
+if {${name} ne ${subport}} {
+    compilers.choose        f77 f90 fc
+    compilers.setup         require_fortran
+
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-six \
+                            port:py${python.version}-scipy \
+                            port:py${python.version}-numpy \
+                            port:py${python.version}-matplotlib
+
+    # Insert my own archflags, so I can edit LDFLAGS
+    python.add_archflags no
+
+    build.env-append CFLAGS="${configure.cc_archflags}" \
+                     OBJCFLAGS="${configure.objc_archflags}" \
+                     CXXFLAGS="${configure.cxx_archflags}" \
+                     FFLAGS="${configure.f77_archflags}" \
+                     F90FLAGS="${configure.f90_archflags}" \
+                     FCFLAGS="${configure.fc_archflags}" \
+                     LDFLAGS="-undefined dynamic_lookup -bundle ${configure.ld_archflags}"
+
+    livecheck.type  none
+} else {
+    livecheck.type  regex
+    livecheck.url   https://pypi.python.org/pypi/PySCeS/
+    livecheck.regex     PySCeS (\\d(\\.\\d+)*)
+}

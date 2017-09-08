@@ -1,0 +1,32 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+PortGroup               github 1.0
+
+github.setup            fmfn BayesianOptimization f243cfc7684216bf14f7c43fe4b648194cc1e068
+version                 20170313
+
+name                    py-bayesian-optimization
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             A Python implementation of global optimization with gaussian processes.
+long_description        Pure Python implementation of bayesian global optimization with gaussian processes.
+license                 MIT
+homepage                https://github.com/fmfn/BayesianOptimization
+
+checksums               rmd160  321ec18f4ccca90a41e47ba71b2185dc6ed791a2 \
+                        sha256  284ba8da28865b374486dc5e928006d9e105b7d786d31fcb2ffa3ef79e6d2b31
+
+python.versions         27
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-numpy \
+                            port:py${python.version}-scipy \
+                            port:py${python.version}-pandas \
+                            port:py${python.version}-scikit-learn
+}
+

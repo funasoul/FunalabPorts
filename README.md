@@ -8,6 +8,7 @@ Local Portfile Repository for FunaLab.
 * python/py-binstruct  ... Portfile for [binstruct](https://pypi.python.org/pypi/binstruct) v1.0.1
 * python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0
 * python/py-chainer2 ... Portfile for [Chainer](https://chainer.org) v2.0.0
+* python/py-constraint  ... Portfile for [python-constraint](https://pypi.python.org/pypi/python-constraint) v1.3.1
 * python/py-cpplint  ... Portfile for [CppLint](https://pypi.python.org/pypi/cpplint) v1.3.0
 * python/py-cupy     ... Portfile for [CuPy](https://github.com/cupy/cupy) v1.0.0 (w/ patch [#91](https://github.com/cupy/cupy/pull/91))
 * python/py-evic     ... Portfile for [Evic](https://github.com/Ban3/python-evic) 176cf0b

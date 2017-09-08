@@ -1,0 +1,30 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+PortGroup               github 1.0
+
+github.setup            python-constraint python-constraint 1.3.1
+name                    py-constraint
+#version                 1.3.1
+maintainers             nomaintainer
+platforms               darwin
+supported_archs         noarch
+
+description             python-constraint is a module implementing support for handling CSPs (Constraint Solving Problems) over finite domain
+long_description        ${description}
+license                 BSD
+homepage                https://pypi.python.org/pypi/python-constraint
+
+checksums               rmd160  7936dc15ea19ee812abbc4694d2cbd3826979dab \
+                        sha256  dfe2f85ed970d1d38c6cfa83cce5628c197f8c6e44b8cdf5ed53d1cd9b0e4d4a
+
+python.versions         26 27 33 34 35 36
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-nose
+    livecheck.type  none
+} else {
+    livecheck.regex     archive/[join ${github.tag_prefix} ""](1\[^"\]+)${extract.suffix}
+}

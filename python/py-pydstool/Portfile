@@ -37,7 +37,7 @@ If you want to use Fortran-based integrator (Radau) from this PyDSTool, please i
 (ex. sudo port install gcc6) and select the installed gcc port as your default gcc
 (ex. sudo port select gcc mp-gcc6), or just create a link to /opt/local/bin/gfortran-mp-6 as 'gfortran'.
 
-Also, if you encounter an error using Radau like: 'ImportError: No module named _radau5_...', please add the directory which contains your compiled .so file to PYTHONPATH.
+Also, if you encounter an error using Radau like: 'ImportError: No module named _radau5_...', please add the directory which contains your compiled '.so' file to PYTHONPATH.
 "
 
     livecheck.type  none

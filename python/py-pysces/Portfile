@@ -44,7 +44,7 @@ if {${name} ne ${subport}} {
                      FCFLAGS="${configure.fc_archflags}" \
                      LDFLAGS="-undefined dynamic_lookup -bundle ${configure.ld_archflags}"
     notes "
-If you want to import SBML models to PySCeS, please install libsbml-devel port with python binding such as:
+To make PySCeS import your SBML models, plear run:
 
 sudo port install libsbml-devel +python
 "

@@ -43,6 +43,11 @@ if {${name} ne ${subport}} {
                      F90FLAGS="${configure.f90_archflags}" \
                      FCFLAGS="${configure.fc_archflags}" \
                      LDFLAGS="-undefined dynamic_lookup -bundle ${configure.ld_archflags}"
+    notes "
+If you want to import SBML models to PySCeS, please install libsbml-devel port with python binding such as:
+
+sudo port install libsbml-devel +python
+"
 
     livecheck.type  none
 } else {

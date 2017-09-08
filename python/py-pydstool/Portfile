@@ -31,6 +31,7 @@ if {${name} ne ${subport}} {
                             port:py${python.version}-mdp-toolkit \
                             port:py${python.version}-constraint \
                             port:py${python.version}-ipython
+    depends_run-append  port:swig-python
     livecheck.type  none
 } else {
     livecheck.type  regex

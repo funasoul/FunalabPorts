@@ -17,6 +17,7 @@ homepage                http://pysces.sourceforge.net
 
 distname                pysces-${version}
 master_sites            pypi:p/pySCeS/
+patchfiles              patch-setup.py.diff patch-PyscesConfig.py.diff
 
 checksums               rmd160  0b9bdc114ba72345898e25620dbdd570d66a0d27 \
                         sha256  7d439258d9409b41d722407e2e51b0c28810a573803a816c416c0197b5a21882

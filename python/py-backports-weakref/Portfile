@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-backports-weakref
-version                 1.0rc1
+version                 1.0.post1
 categories-append       devel
 maintainers             nomaintainer
 platforms               darwin
@@ -18,8 +18,8 @@ master_sites            pypi:b/backports.weakref
 
 distname                backports.weakref-${version}
 
-checksums               rmd160  9cc1dd92ac603018cccc80160750b2e4c6e737b4 \
-                        sha256  8813bf712a66b3d8b85dc289e1104ed220f1878cf981e2fe756dfaabe9a82892
+checksums               rmd160  348aceddeb8e58622ffffe3983fae82101bc39c6 \
+                        sha256  bc4170a29915f8b22c9e7c4939701859650f2eb84184aee80da329ac0b9825c2
 
 python.versions         27 34 35
 

@@ -31,7 +31,6 @@ checksums           rmd160  40866d564fd7c9064ae40724538042e42d29ed0b \
                     sha256  31d02eb44eda1d8a351227e026dfd5e25b2800c52db47f2329acec70b166e083
 
 depends_lib-append  port:bzip2 \
-                    port:libxml2 \
                     port:zlib \
                     port:pkgconfig
 
@@ -86,18 +85,36 @@ variant spatial description {Enable libSBML support for the SBML Level 3 Spatial
 variant python27 conflicts python34 description {Configure to use Python version 2.7} {
     depends_build-append  port:swig port:swig-python
     depends_lib-append      port:python27
-    configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
+    configure.args-append   -DWITH_PYTHON:BOOL=ON -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
 }
 
 variant python34 conflicts python27 description {Configure to use Python version 3.4} {
     depends_build-append  port:swig port:swig-python
     depends_lib-append      port:python34
-    configure.args-append   -DWITH_PYTHON=BOOL:ON -DPYTHON_EXECUTABLE=${prefix}/bin/python3.4
+    configure.args-append   -DWITH_PYTHON:BOOL=ON -DPYTHON_EXECUTABLE=${prefix}/bin/python3.4
 }
 
 variant java description {Configure to use Java} {
     depends_build-append   port:swig port:swig-java
-    configure.args-append  -DWITH_JAVA=BOOL:ON
+    configure.args-append  -DWITH_JAVA:BOOL=ON
+}
+
+variant expat conflicts libxml2 description {Use the Expat XML parser library} {
+    depends_lib-append      port:expat
+    configure.args-append   -DWITH_EXPAT:BOOL=ON
+    configure.args-append   -DWITH_LIBXML:BOOL=OFF
+    configure.args-append   -DWITH_XERCES:BOOL=OFF
+}
+
+variant libxml2 conflicts expat description {Use the libxml2 XML parser library} {
+    depends_lib-append      port:libxml2
+    configure.args-append   -DWITH_EXPAT:BOOL=OFF
+    configure.args-append   -DWITH_LIBXML:BOOL=ON
+    configure.args-append   -DWITH_XERCES:BOOL=OFF
+}
+
+if {![variant_isset expat] && ![variant_isset libxml2]} {
+      default_variants +libxml2
 }
 
 livecheck.regex     /libSBML-(\[0-9.\]+)-Source${extract.suffix}

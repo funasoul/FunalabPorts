@@ -109,7 +109,7 @@ or
 % sudo port install libsbml-devel +spatial +python27
 ```
 
-### Install libSBMLSim (1.3.0) with Java, python, ruby and C# bindings by MacPorts
+### Install libSBMLSim (1.4.0) with Java, python, ruby and C# bindings by MacPorts
 ```sh
 % sudo port install libsbmlsim +java +python27 +ruby +csharp
 ```

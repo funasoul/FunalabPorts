@@ -34,6 +34,12 @@ depends_lib-append  port:bzip2 \
                     port:zlib \
                     port:pkgconfig
 
+configure.args-append -DWITH_EXAMPLES:BOOL=ON
+
+variant cppnamespace description {Use a C++ namespace for libSBML} {
+    configure.args-append   -DWITH_CPP_NAMESPACE:BOOL=ON
+}
+
 variant arrays description {Enable libSBML support for the SBML Level 3 Arrays and Sets ('arrays')} {
     configure.args-append   -DENABLE_ARRAYS:BOOL=ON
 }

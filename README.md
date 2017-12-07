@@ -22,7 +22,7 @@ Local Portfile Repository for FunaLab.
 * python/py-sigopt   ... Portfile for [SigOpt Python API](https://github.com/sigopt/sigopt-python) v2.10.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5
 * science/cufflinks  ... Portfile for [Cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) v2.2.1
-* science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.15.0 (supports building SBML Level 3 package extensions and language bindings)
+* science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.16.0 (supports building SBML Level 3 package extensions and language bindings)
 * science/libsbmlsim ... Portfile for [libSBMLSim](https://fun.bio.keio.ac.jp/software/libsbmlsim/) v1.4.0 (supports building with language bindings)
 * science/samtools0  ... Portfile for [samtools](http://samtools.sourceforge.net) v0.1.19 (because [cufflinks requires samtools-0.x](https://github.com/cole-trapnell-lab/cufflinks/issues/14))
 
@@ -104,9 +104,9 @@ or
 % sudo port upgrade cufflinks
 ```
 
-### Install libSBML (5.15.0) with python binding and SBML Level 3 package extensions by MacPorts
+### Install libSBML (5.16.0) with python and Java binding and SBML Level 3 package extensions by MacPorts
 ```sh
-% sudo port install libsbml-devel +spatial +python27
+% sudo port install libsbml-devel +spatial +python27 + java
 ```
 
 ### Install libSBMLSim (1.4.0) with Java, python, ruby and C# bindings by MacPorts

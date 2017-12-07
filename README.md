@@ -106,7 +106,7 @@ or
 
 ### Install libSBML (5.16.0) with python and Java binding and SBML Level 3 package extensions by MacPorts
 ```sh
-% sudo port install libsbml-devel +spatial +python27 + java
+% sudo port install libsbml-devel +spatial +python27 +java
 ```
 
 ### Install libSBMLSim (1.4.0) with Java, python, ruby and C# bindings by MacPorts

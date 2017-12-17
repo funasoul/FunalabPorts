@@ -34,18 +34,27 @@ checksums           rmd160  16a12b98ca72ec22ab847f002973e2b07db06d38 \
                     sha256  aaff1b5023fc4a5708f1d7d9fd8e2a29f1a7f58bf496532ff1e9d7e7c7ec82bd
 
 post-patch {
-    reinplace "s|@PREFIX@|${prefix}|g"  ${build.dir}/config/nim.cfg
+    reinplace "s|@PREFIX@|${prefix}|g" ${build.dir}/config/nim.cfg
 }
 
 # Nim doesn't have a configure script
 use_configure       no
 
-build.cmd           /bin/sh build.sh
+# build
+build.cmd           /bin/sh build.sh && nim c koch && ./koch tools
+build.env           PATH="${build.dir}/bin:$env(PATH)"
+
+post-build {
+    reinplace "s|#@REMOVE_AFTER_BUILD@||g" ${build.dir}/config/nim.cfg
+}
 
 # install.sh should be called as:
 #   /bin/sh install.sh ${destroot}${prefix}
-destroot.cmd        /bin/sh install.sh
-destroot.destdir    ${destroot}${prefix}
-destroot.target
+destroot {
+    system "cd ${build.dir} && /bin/sh install.sh ${destroot}${prefix}"
+    xinstall -m 0755 ${build.dir}/bin/nimble ${destroot}${prefix}/bin
+    xinstall -m 0755 ${build.dir}/bin/nimgrep ${destroot}${prefix}/bin
+    xinstall -m 0755 ${build.dir}/bin/nimsuggest ${destroot}${prefix}/bin
+}
 
 livecheck.type      none

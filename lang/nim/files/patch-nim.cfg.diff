@@ -1,12 +1,21 @@
 --- config/nim.cfg.dist	2017-09-08 03:45:43.000000000 +0900
-+++ config/nim.cfg	2017-12-18 02:06:41.000000000 +0900
++++ config/nim.cfg	2017-12-18 03:50:27.000000000 +0900
 @@ -23,6 +23,9 @@
  mips.linux.gcc.exe = "mips-openwrt-linux-gcc"
  mips.linux.gcc.linkerexe = "mips-openwrt-linux-gcc"
  
 +# Fix to work with MacPorts directory structure.
-+lib="@PREFIX@/lib/nim"
++#@REMOVE_AFTER_BUILD@lib="@PREFIX@/lib/nim"
 +
  path="$lib/deprecated/core"
  path="$lib/deprecated/pure"
  path="$lib/pure/collections"
+@@ -41,7 +44,7 @@
+ @if nimbabel:
+   nimblepath="$home/.nimble/pkgs/"
+   @if not windows:
+-    nimblepath="/opt/nimble/pkgs/"
++    nimblepath="@PREFIX@/share/nimble/pkgs/"
+   @else:
+     # TODO:
+   @end

@@ -4,6 +4,7 @@ Local Portfile Repository for FunaLab.
 ## What is here
 * devel/protobuf31-cpp   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * devel/protobuf3-cpp-devel   ... Portfile for [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
+* lang/nim           ... Portfile for [nim](https://nim-lang.org) v0.17.2
 * python/py-backports-weakref  ... Portfile for [backports.weakref](https://github.com/pjdelport/backports.weakref) v1.0rc1
 * python/py-binstruct  ... Portfile for [binstruct](https://pypi.python.org/pypi/binstruct) v1.0.1
 * python/py-chainer  ... Portfile for [Chainer](https://chainer.org) v1.24.0

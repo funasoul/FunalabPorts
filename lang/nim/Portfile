@@ -1,0 +1,51 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+
+name                nim
+version             0.17.2
+maintainers         nomaintainer
+license             MIT
+categories          lang devel
+
+description         Nim is a systems and applications programming language. \
+                    Statically typed and compiled, it provides unparalleled \
+                    performance in an elegant package.
+
+long_description    Nim is a new systems programming language that gives you \
+                    the low-level power of C with the elegance and ease of \
+                    languages like Python and Ruby. It is perfect for \
+                    developers that wish to explore systems programming.
+
+master_sites        https://nim-lang.org/download
+distname            ${name}-${version}
+extract.suffix      .tar.xz
+
+homepage            https://nim-lang.org
+platforms           darwin
+supported_archs     i386 x86_64
+universal_variant   no
+
+patchfiles          patch-install.sh.diff \
+                    patch-nim.cfg.diff
+
+checksums           rmd160  16a12b98ca72ec22ab847f002973e2b07db06d38 \
+                    sha256  aaff1b5023fc4a5708f1d7d9fd8e2a29f1a7f58bf496532ff1e9d7e7c7ec82bd
+
+post-patch {
+    reinplace "s|@PREFIX@|${prefix}|g"  ${build.dir}/config/nim.cfg
+}
+
+# Nim doesn't have a configure script
+use_configure       no
+
+build.cmd           /bin/sh build.sh
+
+# install.sh should be called as:
+#   /bin/sh install.sh ${destroot}${prefix}
+destroot.cmd        /bin/sh install.sh
+destroot.destdir    ${destroot}${prefix}
+destroot.target
+
+livecheck.type      none

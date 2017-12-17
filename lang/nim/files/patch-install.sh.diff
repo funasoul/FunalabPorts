@@ -1,0 +1,24 @@
+--- install.sh.dist	2017-09-08 03:45:41.000000000 +0900
++++ install.sh	2017-12-18 01:32:05.000000000 +0900
+@@ -52,15 +52,13 @@
+       mkdir -p $configdir
+       ;;
+     *)
+-      bindir="$1/nim/bin"
+-      configdir="$1/nim/config"
+-      libdir="$1/nim/lib"
+-      docdir="$1/nim/doc"
+-      datadir="$1/nim/data"
+-      nimbleDir="$1/nim"
+-      mkdir -p $1/nim
++      bindir="$1/bin"
++      configdir="$1/etc"
++      libdir="$1/lib/nim"
++      docdir="$1/share/nim/doc"
++      datadir="$1/share/nim/data"
++      nimbleDir="$1/share/nimble/pkgs/compiler-0.17.2"
+       mkdir -p $bindir
+-      mkdir -p $configdir
+       ;;
+   esac
+ 

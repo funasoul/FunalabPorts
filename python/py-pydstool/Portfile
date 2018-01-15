@@ -22,6 +22,8 @@ checksums               rmd160  6a29de82bf855f92646880329d264e247ec6f676 \
 
 python.versions         27 33 34 35 36
 
+patchfiles              init.diff parseUtils.diff
+
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \
                             port:py${python.version}-six \

@@ -15,6 +15,8 @@ Local Portfile Repository for FunaLab.
 * python/py-evic     ... Portfile for [Evic](https://github.com/Ban3/python-evic) 176cf0b
 * python/py-filelock ... Portfile for [filelock](https://pypi.python.org/pypi/filelock) v2.0.10
 * python/py-hidapi   ... Portfile for [cython-hidapi](https://github.com/gbishop/cython-hidapi) 3530c94
+* python/py-javabridge   ... Portfile for
+  [python-javabridge](https://github.com/LeeKamentsky/python-javabridge) 1.0.15
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0

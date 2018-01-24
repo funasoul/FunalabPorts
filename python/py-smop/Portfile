@@ -1,0 +1,38 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+PortGroup           github 1.0
+
+github.setup        Kazuhiro47 smop 4de67066e9b77de8316a4804c081ecc847c436c0
+version             20170928
+
+name                py-smop
+maintainers         nomaintainer
+platforms           darwin
+supported_archs     noarch
+
+description         SMOP is Small Matlab and Octave to Python compiler.
+long_description    SMOP translates matlab to python. Despite obvious \
+                    similarities between matlab and numeric python, there \
+                    are enough differences to make manual translation \
+                    infeasible in real life. SMOP generates human-readable \
+                    python, which also appears to be faster than octave.
+license             MIT
+homepage            https://github.com/Kazuhiro47/smop
+
+checksums           rmd160  da24532f4b545ea57705b549438a9d09be34424d \
+                    sha256  99ce3f32e25c3802b25c7aea541c948a672595f85aff90547c34a145bd419a6a
+
+patchfiles          patch-main.py.diff
+
+python.versions     27 34 35 36
+
+if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-numpy \
+                            port:py${python.version}-scipy \
+                            port:py${python.version}-ply \
+                            port:py${python.version}-networkx
+}
+

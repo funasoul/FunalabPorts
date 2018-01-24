@@ -1,0 +1,11 @@
+--- smop/main.py.dist	2018-01-25 01:16:40.000000000 +0900
++++ smop/main.py	2018-01-25 01:17:58.000000000 +0900
+@@ -103,7 +103,7 @@
+                     if options.execfile:
+                         execfile(f)
+                 except:
+-                    if options.delete-on-error:
++                    if options.delete_on_error:
+                         os.unlink(f)
+                         if options.verbose:
+                             print "Removed",f

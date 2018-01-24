@@ -24,6 +24,7 @@ Local Portfile Repository for FunaLab.
 * python/py-pysces   ... Portfile for [PySCeS](http://pysces.sf.net) v0.9.5
 * python/py-sigopt   ... Portfile for [SigOpt Python API](https://github.com/sigopt/sigopt-python) v2.10.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5
+* python/py-smop     ... Portfile for [SMOP](https://github.com/Kazuhiro47/smop) 4de6706
 * science/cufflinks  ... Portfile for [Cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) v2.2.1
 * science/libsbml-devel ... Portfile for [libSBML](http://sbml.org/Software/libSBML) v5.16.0 (supports building SBML Level 3 package extensions and language bindings)
 * science/libsbmlsim ... Portfile for [libSBMLSim](https://fun.bio.keio.ac.jp/software/libsbmlsim/) v1.4.0 (supports building with language bindings)

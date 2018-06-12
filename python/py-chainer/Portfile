@@ -49,7 +49,7 @@ if {${name} ne ${subport}} {
     }
 
     variant protobuf description {Caffe model support} {
-        depends_lib-append      port:py${python.version}-protobuf3-devel
+        depends_lib-append      port:py${python.version}-protobuf3
     }
 
     livecheck.type      none

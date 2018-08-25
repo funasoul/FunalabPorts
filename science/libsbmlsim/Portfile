@@ -26,7 +26,7 @@ platforms           darwin
 checksums           rmd160  8986883d5e604abe8b4bfa380e0e65f5f4c7c584 \
                     sha256  04ddf304d2a731a17b32fc4a2ca4ac07500f59ae36fa4440f169dd30daa74115
 
-depends_lib-append  port:libsbml-devel
+depends_lib-append  port:libsbml
 
 variant python27 conflicts python34 description {Generate Python version 2.7 language bindings.} {
     depends_build-append  port:swig port:swig-python

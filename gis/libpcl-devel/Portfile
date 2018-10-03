@@ -1,0 +1,72 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           cmake 1.1
+PortGroup           github 1.0
+PortGroup           active_variants 1.1
+PortGroup           compiler_blacklist_versions 1.0
+
+github.setup        PointCloudLibrary pcl 1.8.1 pcl-
+checksums           rmd160  b19a542a2ec5aa6ac7d7c52dae03878f86f0d04c \
+                    sha256  c36d922197dcb2b93461fc7f44240aa0b292615411b6857d9860ac3af443cc2c \
+                    size    66790522
+
+name                libpcl-devel
+categories          gis graphics science
+platforms           darwin
+license             BSD
+maintainers         gmail.com:luminans {vince @Veence}
+description         Point Cloud Library
+long_description    The Point Cloud Library (PCL) is a standalone, large scale, open project \
+                    for 2D/3D image and point cloud processing.
+conflicts           libpcl
+
+homepage            http://pointclouds.org
+
+patchfiles          patch-6555b9a.diff
+
+depends_lib         port:boost \
+                    port:eigen3 \
+                    port:flann \
+                    port:glew \
+                    port:libpng \
+                    port:libusb \
+                    port:openni \
+                    port:qhull \
+                    port:vtk \
+                    port:zlib
+
+depends_test        port:gtest
+
+require_active_variants vtk qt5
+
+configure.args-replace -DCMAKE_BUILD_TYPE=MacPorts -DCMAKE_BUILD_TYPE=Release
+
+configure.args-append -DBUILD_apps=ON \
+                      -DBUILD_examples=ON \
+                      -DWITH_DOCS=OFF \
+                      -DWITH_QT=ON
+
+variant openmp description {Build with macports-clang >= 5.0 to enable OpenMP for speed} {
+    depends_lib-append      port:libomp
+    compiler.blacklist-append *gcc* {clang}
+    compiler.blacklist-append macports-clang-3.3 macports-clang-3.4
+    compiler.blacklist-append macports-clang-3.5 macports-clang-3.6
+    compiler.blacklist-append macports-clang-3.7 macports-clang-3.8
+    compiler.blacklist-append macports-clang-3.9 macports-clang-4.0
+}
+
+variant test description {Configure to run unit tests} {
+    configure.args-replace -DBUILD_apps=ON -DBUILD_apps=OFF
+    configure.args-replace -DBUILD_examples=ON -DBUILD_examples=OFF
+    configure.args-append  -DBUILD_global_tests=ON \
+                           -DGTEST_SRC_DIR=${prefix}/src/googletest/
+}
+
+default_variants    +openmp
+
+# Test phase completes to the test summary (93 of 104 passed) but then aborts with
+# "Failed to test libpcl: command execution failed"
+# Needs further work
+test.run            yes
+test.target         tests

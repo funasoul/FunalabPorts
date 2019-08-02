@@ -19,6 +19,7 @@ Local Portfile Repository for FunaLab.
 * python/py-javabridge   ... Portfile for
   [python-javabridge](https://github.com/LeeKamentsky/python-javabridge) 1.0.15
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
+* python/py-nvim  ... Portfile for [pynvim](https://github.com/neovim/pynvim) v0.3.2
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
 * python/py-pydstool ... Portfile for [PyDSTool](http://pydstool.sf.net) v0.90.2

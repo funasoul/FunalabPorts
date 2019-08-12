@@ -32,7 +32,8 @@ if {${name} ne ${subport}} {
         depends_lib-append  port:py${python.version}-trollius
     }
 
-    depends_lib-append  port:msgpack1
+    depends_lib-append  port:msgpack1 \
+                        port:py${python.version}-msgpack
 
     livecheck.type      none
 

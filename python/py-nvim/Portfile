@@ -33,7 +33,8 @@ if {${name} ne ${subport}} {
     }
 
     depends_lib-append  port:msgpack1 \
-                        port:py${python.version}-msgpack
+                        port:py${python.version}-msgpack \
+                        port:py${python.version}-greenlet
 
     livecheck.type      none
 

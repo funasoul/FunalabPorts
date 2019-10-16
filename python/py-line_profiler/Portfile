@@ -23,7 +23,6 @@ checksums           rmd160  eb0f1a53d379d66d06fe316c273c58eeab11ec85 \
 python.versions     27 36 37
 
 if {${name} ne ${subport}} {
-    # worksrcdir     pynvim-0.3.2
 
     depends_build-append    port:py${python.version}-setuptools \
                             port:py${python.version}-ipython

@@ -38,7 +38,7 @@ platforms       darwin
 python.versions 27 36 37 38
 
 if {${name} ne ${subport}} {
-    depends_build   port:bazel \
+    depends_build   port:bazel26 \
                     port:py${python.version}-pip
 
     depends_lib     port:py${python.version}-cython \

@@ -1,0 +1,64 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem      1.0
+PortGroup       python 1.0
+PortGroup       github 1.0
+
+name            py-ray
+version         0.7.6
+distname        ray-${version}
+
+categories-append   parallel
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+license         Apache-2
+description     Ray is a fast and simple framework for building and running distributed applications.
+
+long_description \
+                A fast and simple framework for building and running \
+                distributed applications. Ray is packaged with RLlib, a \
+                scalable reinforcement learning library, and Tune, a \
+                scalable hyperparameter tuning library. \
+                https://ray.readthedocs.io/en/latest/
+
+github.setup    ray-project ray ${version} ray-
+#github.setup    ray-project ray 8485304e8370fbd75eec6827bc436440f26e76a8
+homepage        https://github.com/ray-project/ray
+worksrcdir      python
+
+checksums       rmd160  7ed131436b0cbb95bdfde4d239b70ff8b74c2906 \
+                sha256  e66a5cb77aa5ee062107ba80325962e2c83b25c082494b6cb33973adb5ff538f \
+                size    5213688
+
+# checksums       rmd160  6b8236f1bdb0c52c65f0f6c5132113fb7ab4bb0e \
+                # sha256  50ac284fe1d9504f411cdaf3267f3415f5614e143dfafdf1c17336a1811d1ef8 \
+                # size    5297598
+
+platforms       darwin
+
+python.versions 27 36 37 38
+
+if {${name} ne ${subport}} {
+    depends_build   port:bazel \
+                    port:py${python.version}-pip
+
+    depends_lib     port:py${python.version}-cython \
+                    port:py${python.version}-numpy \
+                    port:py${python.version}-filelock \
+                    port:py${python.version}-jsonschema \
+                    port:py${python.version}-funcsigs \
+                    port:py${python.version}-click \
+                    port:py${python.version}-colorama \
+                    port:py${python.version}-pytest \
+                    port:py${python.version}-yaml \
+                    port:py${python.version}-redis \
+                    port:py${python.version}-six \
+                    port:py${python.version}-protobuf3 \
+                    port:py${python.version}-setuptools
+
+    worksrcdir      ${worksrcdir}/../ray-${version}/python
+
+    if {${python.version} < 33} {
+        depends_lib-append  port:py${python.version}-faulthandler
+    }
+
+}

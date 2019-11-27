@@ -18,11 +18,14 @@ Local Portfile Repository for FunaLab.
 * python/py-hidapi   ... Portfile for [cython-hidapi](https://github.com/gbishop/cython-hidapi) 3530c94
 * python/py-javabridge   ... Portfile for
   [python-javabridge](https://github.com/LeeKamentsky/python-javabridge) 1.0.15
+* python/py-lightgbm ... Portfile for [LightGBM Python-package](https://github.com/microsoft/LightGBM/tree/master/python-package) v2.3.0
+* python/py-line_profiler ... Portfile for [Line-by-line profiling for Python](https://github.com/rkern/line_profiler) 2.1
 * python/py-mock2 ... Portfile for [mock](https://github.com/testing-cabal/mock) v2.0.0
 * python/py-nvim  ... Portfile for [pynvim](https://github.com/neovim/pynvim) v0.3.2
 * python/py-protobuf31 ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.1.0
 * python/py-protobuf3-devel ... Portfile for python binding of [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) v3.3.0
 * python/py-pydstool ... Portfile for [PyDSTool](http://pydstool.sf.net) v0.90.2
+* python/py-pyopt    ... Portfile for [pyOpt](http://www.pyopt.org/) 20170325
 * python/py-pysces   ... Portfile for [PySCeS](http://pysces.sf.net) v0.9.5
 * python/py-sigopt   ... Portfile for [SigOpt Python API](https://github.com/sigopt/sigopt-python) v2.10.0
 * python/py-slackweb ... Portfile for [slack-python-webhook](https://github.com/satoshi03/slack-python-webhook) v1.0.5

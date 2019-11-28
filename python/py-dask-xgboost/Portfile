@@ -1,0 +1,47 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+PortGroup           github 1.0
+
+name                py-dask-xgboost
+version             0.1.9
+
+github.setup        dask dask-xgboost ${version}
+github.tarball_from archive
+#distname            ${github.version}
+
+license             BSD
+platforms           darwin
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+description         Interactions between Dask and XGBoost
+long_description    Distributed training with XGBoost and Dask.distributed \
+					This repository enables you to perform distributed \
+					training with XGBoost on Dask.array and Dask.dataframe \
+					collections.
+homepage            https://github.com/dask/dask-xgboost
+
+checksums           rmd160  cf8d25b7ab07f6d8ec59e0823b50bb86c56ed87d \
+                    sha256  931a34646c4e1eacb9315e86626e7a291f414f017f6508f144aa14f0f8a3fad8 \
+                    size    14416
+
+python.versions     36 37
+
+if {${name} ne ${subport}} {
+
+    depends_build-append    port:py${python.version}-setuptools \
+                            port:py${python.version}-ipython
+
+    depends_lib     		port:libomp \
+                        	port:py${python.version}-dask \
+							port:py${python.version}-distributed \
+                        	port:py${python.version}-fsspec \
+							port:py${python.version}-xgboost
+
+    livecheck.type      none
+
+} else {
+
+    livecheck.regex     archive/[join ${github.tag_prefix} ""](1\[^"\]+)${extract.suffix}
+
+}

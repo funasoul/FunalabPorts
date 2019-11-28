@@ -5,7 +5,7 @@ PortGroup               python 1.0
 configure.cxx_stdlib    macports-libstdc++
 
 name                    py-xgboost
-version                 0.90
+version                 0.81
 categories-append       science
 license                 Apache-2
 platforms               darwin
@@ -19,9 +19,9 @@ homepage                https://pypi.python.org/pypi/${python.rootname}/
 
 patchfiles              patch-build-python.sh.diff
 
-checksums               rmd160  24908b3ac2f1f65a73ab136ecd4a1dea4a3cb161 \
-                        sha256  d69f90d61a63e8889fd39a31ad00c629bac1ca627f8406b9b6d4594c9e29ab84 \
-                        size    676689
+checksums               rmd160  83533c5d27a6ee18b172b565cad7232fee63ebb0 \
+                        sha256  f7c8057610350b0b2f91e1ac7c034f2f03d233919d111759346559e628061e0c \
+                        size    636329
 
 python.versions         36 37
 

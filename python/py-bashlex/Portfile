@@ -23,14 +23,9 @@ python.versions     27 36 37 38
 
 if {${name} ne ${subport}} {
     post-activate {
-        # system -W ${worksrcpath} "${python.bin} -c 'import bashlex'"
         system -W /tmp "${python.bin} -c 'import bashlex'"
     }
 
     livecheck.type      none
-
-} else {
-
-    livecheck.regex     archive/[join ${github.tag_prefix} ""](1\[^"\]+)${extract.suffix}
 
 }

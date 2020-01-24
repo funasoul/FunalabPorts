@@ -1,0 +1,36 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+PortGroup           github 1.0
+
+github.setup        idank bashlex 0.14
+distname            ${github.version}
+
+name                py-bashlex
+license             GPL
+platforms           darwin
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+description         Python parser for bash
+long_description    bashlex is a Python port of the parser used internally by GNU bash.
+homepage            https://github.com/idank/bashlex
+
+checksums           rmd160  5149606f918dc10ea7e851207a85fed6802440ce \
+                    sha256  3249cc947405dc5db39caba62b54ac9189ff53efba85595c4bbf430366a7f584 \
+                    size    67880
+
+python.versions     27 36 37 38
+
+if {${name} ne ${subport}} {
+    post-activate {
+        # system -W ${worksrcpath} "${python.bin} -c 'import bashlex'"
+        system -W /tmp "${python.bin} -c 'import bashlex'"
+    }
+
+    livecheck.type      none
+
+} else {
+
+    livecheck.regex     archive/[join ${github.tag_prefix} ""](1\[^"\]+)${extract.suffix}
+
+}

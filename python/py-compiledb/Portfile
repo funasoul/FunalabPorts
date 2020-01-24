@@ -24,8 +24,9 @@ python.versions     36 37 38
 
 if {${name} ne ${subport}} {
 
-    depends_lib-append  port:py${python.version}-click \
-                        port:py${python.version}-bashlex
+    depends_lib-append  port:py${python.version}-bashlex \
+                        port:py${python.version}-click \
+                        port:py${python.version}-shutilwhich
 
     depends_run         port:compiledb_select
 

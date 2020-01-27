@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        neovim pynvim 0.3.2
+github.setup        neovim pynvim 0.4.1
 github.tarball_from archive
 distname            ${github.version}
 
@@ -16,14 +16,14 @@ description         Pynvim: Python client to Neovim
 long_description    Pynvim implements support for python plugins in Nvim. It also works as a library for connecting to and scripting Nvim processes through its msgpack-rpc API.
 homepage            https://github.com/neovim/pynvim
 
-checksums           rmd160  5562b0fce3e3669a2daa23f059515fe84ac5311b \
-                    sha256  0a44c540dd5790acfbc7e411b0ed4fb6c44914d866226ebebf370c24c2723dc2 \
-                    size    51954
+checksums           rmd160  a323f2a6c80dc3c70a24251a2aa1fc3fa01a6fc9 \
+                    sha256  132ea5c226399aed45a959f1d8efe8cdd89a769a672534722760a9a67b06dfa0 \
+                    size    52340
 
-python.versions     27 34 35 36 37
+python.versions     27 36 37 38
 
 if {${name} ne ${subport}} {
-    worksrcdir     pynvim-0.3.2
+    worksrcdir     pynvim-0.4.1
 
     depends_build-append    port:py${python.version}-setuptools \
                             port:py${python.version}-pytest-runner
@@ -37,9 +37,5 @@ if {${name} ne ${subport}} {
                         port:py${python.version}-msgpack
 
     livecheck.type      none
-
-} else {
-
-    livecheck.regex     archive/[join ${github.tag_prefix} ""](1\[^"\]+)${extract.suffix}
 
 }

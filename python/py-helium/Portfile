@@ -1,0 +1,30 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+PortGroup           python 1.0
+
+github.setup        mherrmann helium 3.0.1 v
+distname            ${github.version}
+
+name                py-helium
+license             MIT
+platforms           darwin
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+description         Lighter browser automation based on Selenium.
+long_description    Helium is a Python library for automating web browsers. Under the hood, Helium forwards each call to Selenium. The difference is that Helium's API is much more high-level. In Selenium, you need to use HTML IDs, XPaths and CSS selectors to identify web page elements. Helium on the other hand lets you refer to elements by their user-visible labels. As a result, Helium scripts are 30-50% shorter than similar Selenium scripts. What's more, they are easier to read and more stable with respect to changes in the underlying web page.
+homepage            https://github.com/mherrmann/helium
+
+checksums           rmd160  b794e2702e682f6a6ba98cc084e3e3deeb6acb3e \
+                    sha256  efcb6399507d84415cde23b81fead5fc79ac7d895bc9883d8857b4a05f37e015 \
+                    size    20074880
+
+python.versions     36 37 38
+
+if {${name} ne ${subport}} {
+
+    depends_lib-append  port:py${python.version}-selenium
+
+    livecheck.type      none
+
+}

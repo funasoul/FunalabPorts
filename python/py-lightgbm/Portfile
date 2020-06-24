@@ -5,7 +5,7 @@ PortGroup       python 1.0
 PortGroup       github 1.0
 
 name            py-lightgbm
-version         2.3.0
+version         2.3.1
 
 categories-append   science
 maintainers         {@funasoul gmail.com:funasoul} openmaintainer
@@ -23,9 +23,9 @@ long_description \
 github.setup    microsoft LightGBM ${version} v
 homepage        https://github.com/microsoft/LightGBM
 
-checksums       rmd160  18bd1880d6c1de1d14014dd0c151ec67bfc8e661 \
-                sha256  2bea2102b479cfc8fdbdec8bec77c0711b988a2e9ea376a6fc501f92841e9a43 \
-                size    4692869
+checksums       rmd160  e42be21b19973056cec7f0cbbaf028e8788f583c \
+                sha256  0f3136b6336e3c6b599561ac14b2dcac84bff65c855210f0baaa90896eb3e9fa \
+                size    4698995
 
 platforms       darwin
 

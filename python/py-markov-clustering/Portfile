@@ -12,7 +12,8 @@ license             MIT
 platforms           darwin
 maintainers         {@funasoul gmail.com:funasoul} openmaintainer
 description         Implementation of the Markov clustering (MCL) algorithm in python.
-long_description    This module implements of the MCL algorithm in python. The MCL algorithm was developed by Stijn van Dongen at the University of Utrecht.  Details of the algorithm can be found on the MCL homepage (https://micans.org/mcl/).
+long_description    This module implements of the MCL algorithm in python. The MCL algorithm was developed by Stijn van Dongen at the University of Utrecht. Details of the algorithm can be found on the MCL homepage (https://micans.org/mcl/).
+homepage            https://github.com/guyallard/markov_clustering
 
 checksums           rmd160  2a95759c65303816001309d4e7c01bd0e7ac801e \
                     sha256  2d1b79aaaab36d2e4f19d03d42d8c473270f7fd38f22f6bf8cd91d7ce982ede4 \

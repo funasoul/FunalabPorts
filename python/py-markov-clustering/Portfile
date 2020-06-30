@@ -1,0 +1,33 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+PortGroup           python 1.0
+
+github.setup        GuyAllard markov_clustering 0.0.6
+distname            ${github.version}
+
+name                py-markov-clustering
+license             MIT
+platforms           darwin
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+description         Implementation of the Markov clustering (MCL) algorithm in python.
+long_description    This module implements of the MCL algorithm in python. The MCL algorithm was developed by Stijn van Dongen at the University of Utrecht.  Details of the algorithm can be found on the MCL homepage (https://micans.org/mcl/).
+
+checksums           rmd160  2a95759c65303816001309d4e7c01bd0e7ac801e \
+                    sha256  2d1b79aaaab36d2e4f19d03d42d8c473270f7fd38f22f6bf8cd91d7ce982ede4 \
+                    size    380668
+
+python.versions     36 37 38
+
+if {${name} ne ${subport}} {
+
+    depends_lib-append  port:py${python.version}-numpy \
+                        port:py${python.version}-scipy \
+                        port:py${python.version}-scikit-learn \
+                        port:py${python.version}-networkx \
+                        port:py${python.version}-matplotlib
+
+    livecheck.type      none
+
+}

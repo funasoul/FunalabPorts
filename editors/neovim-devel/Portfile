@@ -22,11 +22,7 @@ conflicts               neovim
 
 homepage                https://neovim.io
 
-patchfiles              12624-BuildLuajit.diff \
-                        12624-CMakeLists.diff \
-                        12624-thirdparty-CMakeLists.diff
-                        # 13405-option.diff
-                        # 12624-protocol.diff
+patchfiles              patch-CMakeLists.diff
 
 checksums               rmd160  740290555b5f031a87ffb6c99a90a03002c31596 \
                         sha256  50a2d5ae4b426bb7e0956f8875136f9ba5846cdac4650e83460135253d48d0b9 \

@@ -1,0 +1,38 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+
+PortSystem              1.0
+PortGroup               python 1.0
+
+name                    py-xmltramp2
+version                 3.1.1
+categories-append       textproc
+platforms               darwin
+license                 GPL
+maintainers             {@funasoul gmail.com:funasoul} openmaintainer
+description             A modern refactoring of the venerable xmltramp application
+long_description        xmltramp is a simple, fast, lightweight alternative to more heavyweight parsers such as BeautifulSoup or ElementTree. It won't do all they do, but what it does do it does simply and easily.
+
+distname                ${python.rootname}-${version}
+master_sites            pypi:[string index ${python.rootname} 0]/${python.rootname}/
+homepage                https://pypi.python.org/pypi/${python.rootname}/
+
+checksums               rmd160  a8a6cf9c3cee03d9aaa701b4435d43752fd16a78 \
+                        sha256  5a5db8ada87851e6e661b27659f7e24d8af9ab839afb87a82e04002e6711f1b7 \
+                        size    6659
+
+python.versions         27 34 35 36 37 38 39
+
+if {${name} ne ${subport}} {
+    depends_build-append  port:py${python.version}-setuptools \
+                          port:py${python.version}-requests
+
+    depends_lib-append    port:py${python.version}-six
+
+    livecheck.type        none
+} else {
+
+    livecheck.type      regex
+    livecheck.url       ${homepage}
+    livecheck.regex     {xmltramp2 ([0-9]+(\.[0-9]+)*)}
+
+}

@@ -2,7 +2,7 @@
 
 PortSystem          1.0
 
-name                chromedriver-dev
+name                chromedriver-devel
 version             88.0.4324.96
 categories          www
 platforms           darwin
@@ -16,6 +16,8 @@ long_description    WebDriver is an open source tool for automated testing of \
                     webapps across many browsers. It provides capabilities for \
                     navigating to web pages, user input, JavaScript execution, \
                     and more.
+
+conflicts           chromedriver
 
 homepage            https://sites.google.com/a/chromium.org/chromedriver/
 master_sites        https://chromedriver.storage.googleapis.com/${version}/

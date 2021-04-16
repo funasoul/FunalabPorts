@@ -36,7 +36,7 @@ build {}
 destroot {
     xinstall -m 755 \
         ${worksrcpath}/chromedriver \
-        ${destroot}${prefix}/bin/${subport}
+        ${destroot}${prefix}/bin/chromedriver
 }
 
 # most recent versions via

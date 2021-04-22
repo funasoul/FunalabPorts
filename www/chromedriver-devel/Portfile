@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                chromedriver-devel
-version             88.0.4324.96
+version             90.0.4430.24
 categories          www
 platforms           darwin
 maintainers         nomaintainer
@@ -44,9 +44,9 @@ destroot {
 set latest_major_version \
                     [lindex [split ${version} .] 0]
 
-checksums           rmd160  855eb4eb97d65095b05a78f25660209823b6adaf \
-                    sha256  b7171a5bf9cdc1afe10b7f7812e13d275342e861518a7db6ff1ce5666e65bf86 \
-                    size    8137203
+checksums           rmd160  ae418f920576ba0d9bb5cd6479ab46d6f371e028 \
+                    sha256  1318b3717576154e36476c3253ee8e87a2e09eaf07631ee4948348a8f6a1545f \
+                    size    8050248
 
 if {${subport} eq ${name}} {
     conflicts       ${name}-${latest_major_version}

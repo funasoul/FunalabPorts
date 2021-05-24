@@ -1,0 +1,47 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+
+name                py-openpiv
+version             0.23.6
+categories-append   devel
+platforms           darwin
+license             GPL-3
+
+python.versions     37 38 39
+
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+
+description         OpenPIV consists in a Python and Cython modules for \
+                    scripting and executing the analysis of a set of PIV image \
+                    pairs.
+
+long_description    OpenPIV consists in a Python and Cython modules for \
+                    scripting and executing the analysis of a set of PIV \
+                    image pairs. In addition, a Qt and Tk graphical user \
+                    interfaces are in development, to ease the use for those \
+                    users who don't have python skills.
+
+homepage            http://www.openpiv.net/openpiv-python/
+master_sites        pypi:O/OpenPIV
+
+distname            OpenPIV-${version}
+
+checksums           rmd160  03b4c82502f2f65c70fd4524f1894b96d7744762 \
+                    sha256  4f6533676d21cbfb5d22b7d2407f61e43bf95f57d7e295211334b2d0d5772a45 \
+                    size    90861724
+
+if {${name} ne ${subport}} {
+    depends_lib-append  port:py${python.version}-numpy \
+                        port:py${python.version}-imageio \
+                        port:py${python.version}-matplotlib \
+                        port:py${python.version}-scikit-image \
+                        port:py${python.version}-scipy \
+                        port:py${python.version}-natsort \
+                        port:py${python.version}-gitpython \
+                        port:py${python.version}-pytest \
+                        port:py${python.version}-tqdm
+
+    livecheck.type      none
+}

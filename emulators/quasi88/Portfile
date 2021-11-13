@@ -1,0 +1,36 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        waitingmoon quasi88 0.6.5
+checksums           rmd160  4aca3ff61c8e4f4986364b5b608af2584b9ba620 \
+                    sha256  385746b917fe0b35059953ea9a39a7b6e89cf97c2449a79914d25771eb5e5e21 \
+                    size    1156243
+
+name                quasi88
+categories          emulators
+platforms           darwin
+license             BSD
+maintainers         {@funasoul gmail.com:funasoul} openmaintainer
+description         PC-8801 emulator
+long_description    ${description}
+
+homepage            https://www.eonet.ne.jp/~showtime/quasi88/
+
+depends_lib         port:libsdl
+
+use_configure       no
+
+build.cmd           make
+build.args          X11_VERSION=  \
+                    SDL_VERSION=1 \
+                    ARCH=macosx \
+                    X11_JOYSTICK=joy_sdl \
+                    SOUND_SDL=1
+
+destroot {
+    xinstall -m 0755 ${build.dir}/quasi88.sdl ${destroot}${prefix}/bin/quasi88
+}
+
+

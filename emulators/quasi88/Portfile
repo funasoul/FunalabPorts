@@ -23,11 +23,11 @@ depends_lib         port:libsdl
 use_configure       no
 
 build.cmd           make
-build.args          X11_VERSION=  \
+build.args          ARCH=macosx \
                     SDL_VERSION=1 \
-                    ARCH=macosx \
+                    SOUND_SDL=1 \
                     X11_JOYSTICK=joy_sdl \
-                    SOUND_SDL=1
+                    X11_VERSION=
 
 destroot {
     xinstall -m 0755 ${build.dir}/quasi88.sdl ${destroot}${prefix}/bin/quasi88

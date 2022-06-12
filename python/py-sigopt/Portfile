@@ -21,7 +21,7 @@ patchfiles              patch-setup.py.diff
 checksums               rmd160  ad9e46d7f70ca2afd9de276d5c24b8842774ae2f \
                         sha256  1c23fdb32e4d3ab6707979eceb46b395ff853498f48ef47f344ca3bb87d89a5d
 
-python.versions         27 34 35 36 37 38
+python.versions         27 34 35 36 37 38 39 310
 
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \

@@ -20,7 +20,7 @@ homepage                https://github.com/satoshi03/slack-python-webhook
 checksums               rmd160  b781812253b25d6208a34cb052f5034a39b97c5c \
                         sha256  bc87611fa4daab4c7340fff74b085d3a7ec9455da7efe0c0cefaa336f6d70118
 
-python.versions         27 36 37 38
+python.versions         27 36 37 38 39 310
 
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools

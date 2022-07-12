@@ -4,8 +4,8 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-pydstool
-version                 0.90.2
-revision                1
+version                 0.91.0
+# revision                1
 maintainers             nomaintainer
 platforms               darwin
 supported_archs         noarch
@@ -18,27 +18,23 @@ homepage                https://pypi.python.org/pypi/PyDSTool
 distname                PyDSTool-${version}
 master_sites            pypi:p/pyDSTool/
 
-checksums               rmd160  6a29de82bf855f92646880329d264e247ec6f676 \
-                        sha256  6e0cbceab8088ee8cbd0839202cdbaeebbe4ab2e6d1a0d0053c7de30268587c1
+checksums               rmd160  a4abd93a52e8872309e402ee9784c4efac82d881 \
+                        sha256  f21044d721461310f0605b7a83fba6cba78d1703456042809bde9d772c9b5c95 \
+                        size    4213947
 
-python.versions         27 33 34 35 36
-
-patchfiles              init.diff parseUtils.diff
+python.versions         36 37 38 39 # 310 does not work
 
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \
-                            port:py${python.version}-six \
-                            port:py${python.version}-scipy \
                             port:py${python.version}-numpy \
+                            port:py${python.version}-scipy \
                             port:py${python.version}-matplotlib \
-                            port:py${python.version}-mdp-toolkit \
-                            port:py${python.version}-constraint \
                             port:py${python.version}-ipython
     depends_run-append  port:swig-python
     notes "
 If you want to use Fortran-based integrator (Radau) from this PyDSTool, please install gfortran from gcc ports
-(ex. sudo port install gcc6) and select the installed gcc port as your default gcc
-(ex. sudo port select gcc mp-gcc6), or just create a link to /opt/local/bin/gfortran-mp-6 as 'gfortran'.
+(ex. sudo port install gcc12) and select the installed gcc port as your default gcc
+(ex. sudo port select gcc mp-gcc12), or just create a link to ${prefix}/bin/gfortran-mp-12 as 'gfortran'.
 
 Also, if you encounter an error using Radau like: 'ImportError: No module named _radau5_...', please add the directory which contains your compiled '.so' file to PYTHONPATH.
 "

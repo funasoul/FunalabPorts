@@ -4,8 +4,8 @@ PortSystem              1.0
 PortGroup               python 1.0
 PortGroup               github 1.0
 
-version                 20220609
-github.setup            fmfn BayesianOptimization 59ecbefaeb102839de3dd9ba575910d3791c1ea1
+version                 20220622
+github.setup            fmfn BayesianOptimization 891be878864cadae6b0aaffb30ce96a1907b25b5
 
 name                    py-bayesian-optimization
 maintainers             nomaintainer
@@ -17,9 +17,9 @@ long_description        Pure Python implementation of bayesian global optimizati
 license                 MIT
 homepage                https://github.com/fmfn/BayesianOptimization
 
-checksums               rmd160  738191f2542b51eadb2daa49213bd2fc3f2cf7e8 \
-                        sha256  4abeb2131c0063d691a689f466770f3d1c5751e2cb2f86feeefd28f6b1ceea0b \
-                        size    17451985
+checksums               rmd160  ea3c7ee23c8b9d2a1bb30b09a61bc33a95f554f1 \
+                        sha256  f15a8155d023433855bfb52bcb94f4af04a359c06d1a84c72a602e291ce8441a \
+                        size    17442844
 
 python.versions         27 37 38 39 310
 

@@ -22,7 +22,8 @@ checksums               rmd160  a4abd93a52e8872309e402ee9784c4efac82d881 \
                         sha256  f21044d721461310f0605b7a83fba6cba78d1703456042809bde9d772c9b5c95 \
                         size    4213947
 
-python.versions         36 37 38 39 # 310 does not work
+# python310 is not supported
+python.versions         36 37 38 39
 
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \

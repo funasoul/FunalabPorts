@@ -19,7 +19,7 @@ checksums           rmd160  5149606f918dc10ea7e851207a85fed6802440ce \
                     sha256  3249cc947405dc5db39caba62b54ac9189ff53efba85595c4bbf430366a7f584 \
                     size    67880
 
-python.versions     27 36 37 38
+python.versions     27 36 37 38 39 310
 
 if {${name} ne ${subport}} {
     post-activate {
